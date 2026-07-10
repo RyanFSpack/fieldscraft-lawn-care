@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Thank you for booking FieldsCraft Lawn Care. Ryan will text you to confirm your time window.">
+  <title>Thank You | FieldsCraft Lawn Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#22c55e',
+              'green-dark': '#16a34a',
+              'green-light': '#dcfce7',
+              charcoal: '#1f2937',
+              gold: '#eab308',
+              'gold-soft': '#fef9c3',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 10px 40px -12px rgba(31, 41, 55, 0.12)',
+            card: '0 4px 24px -4px rgba(31, 41, 55, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; color: #1f2937; }
+  </style>
+</head>
+<body class="bg-white antialiased">
+
+  <!-- Header (matches main site) -->
+  <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+      <a href="index.html" class="group flex items-center gap-2.5">
+        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-green text-white shadow-sm" aria-hidden="true">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 20c1.5-4 2-8 1-14 3 3 4 7 4 11" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 20c.8-3.5 1.2-7 .5-12 2.5 2.5 3.5 6 3.5 10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 20c.6-2.5 1-5.5.5-9 2 2 2.5 4.5 2.5 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 20h16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="text-lg font-bold tracking-tight text-brand-charcoal sm:text-xl">FieldsCraft</span>
+      </a>
+      <nav class="hidden items-center gap-8 text-sm font-medium text-gray-600 md:flex" aria-label="Primary">
+        <a href="index.html" class="transition hover:text-brand-green">Home</a>
+        <a href="index.html#services" class="transition hover:text-brand-green">Services</a>
+        <a href="index.html#about" class="transition hover:text-brand-green">About</a>
+        <a href="index.html#faq" class="transition hover:text-brand-green">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="bg-gradient-to-b from-brand-green-light/40 to-white">
+    <div class="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center px-4 py-16 text-center sm:px-6 sm:py-24">
+      <div class="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-brand-green text-white shadow-soft" aria-hidden="true">
+        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Payment received</p>
+      <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-brand-charcoal sm:text-4xl">
+        Thank you!
+      </h1>
+      <p class="mt-5 max-w-lg text-base leading-relaxed text-gray-600 sm:text-lg">
+        Your booking is confirmed pending time confirmation. Ryan will text you within 24 hours from
+        <a href="tel:+13039068597" class="font-semibold text-brand-green hover:underline">303.906.8597</a>
+        to finalize the exact time window.
+      </p>
+      <div class="mt-8 rounded-2xl border border-brand-gold/30 bg-brand-gold-soft/60 px-5 py-4 text-sm font-medium text-brand-charcoal">
+        Questions? Text Ryan at
+        <a href="tel:+13039068597" class="font-bold text-brand-green hover:underline">303.906.8597</a>
+      </div>
+      <a
+        href="index.html"
+        class="mt-10 inline-flex items-center justify-center rounded-xl bg-brand-green px-6 py-3.5 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-green-dark"
+      >
+        Back to Home
+      </a>
+    </div>
+  </main>
+
+  <footer class="border-t border-gray-100 bg-white py-8">
+    <p class="text-center text-xs text-gray-400">
+      &copy; <span id="year"></span> FieldsCraft Lawn Care. All rights reserved. · Fort Collins, Colorado
+    </p>
+  </footer>
+
+  <script>
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  </script>
+</body>
+</html>

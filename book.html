@@ -36,8 +36,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: Inter, system-ui, sans-serif; color: #1f2937; }
-    /* Custom radio cards for time window */
-    .time-option input:checked + label {
+    /* Custom radio cards for time window + clippings preference */
+    .time-option input:checked + label,
+    .clip-option input:checked + label {
       border-color: #22c55e;
       background-color: #dcfce7;
       box-shadow: 0 0 0 1px #22c55e;
@@ -107,7 +108,7 @@
           Book Your Lawn Care Service
         </h1>
         <p class="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-600 sm:text-lg">
-          Choose your preferred day and time window. Ryan will text you to confirm within 24 hours.
+          Fill out the form and pay to secure your booking. Ryan will text you within 24 hours to confirm your exact time window.
         </p>
       </div>
     </section>
@@ -170,19 +171,19 @@
           <li class="flex gap-3">
             <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">1</span>
             <p class="pt-1 text-sm leading-relaxed text-gray-600 sm:text-base">
-              Choose your date and time window below
+              Fill out this form and pay to secure your booking
             </p>
           </li>
           <li class="flex gap-3">
             <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">2</span>
             <p class="pt-1 text-sm leading-relaxed text-gray-600 sm:text-base">
-              Ryan will text you to confirm within 24 hours
+              Ryan will text you within 24 hours from 303.906.8597 to confirm your exact time window
             </p>
           </li>
           <li class="flex gap-3">
             <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">3</span>
             <p class="pt-1 text-sm leading-relaxed text-gray-600 sm:text-base">
-              Pay to confirm your booking (we’ll send the payment link after confirmation)
+              Bromley arrives and delivers great results
             </p>
           </li>
         </ol>
@@ -310,39 +311,109 @@
             </div>
           </fieldset>
 
-          <!-- Notes -->
-          <div>
-            <label for="notes" class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
-              Notes / Special Instructions
-            </label>
-            <p class="mb-2 text-xs leading-relaxed text-gray-500">
-              Helpful for Bromley’s safety and a smooth visit — gate codes, pets, flower beds, access notes, etc.
-            </p>
-            <textarea
-              id="notes"
-              name="notes"
-              rows="5"
-              placeholder="Examples: Gate code is 1234, Please put the dog inside, Watch the flower bed on the left side, Access is through the side gate, etc."
-              class="w-full resize-y rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
-            ></textarea>
+          <!-- Lawn Clippings Preference + Notes -->
+          <div class="space-y-6">
+            <fieldset>
+              <legend class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
+                Lawn Clippings Preference <span class="text-brand-green">*</span>
+              </legend>
+              <p class="mb-3 text-xs leading-relaxed text-gray-500">
+                Tell us how you’d like clippings handled so Bromley can do the job right.
+              </p>
+              <div class="space-y-3">
+                <div class="clip-option">
+                  <input type="radio" id="clip-mulched" name="clippings" value="mulched" class="sr-only" required>
+                  <label for="clip-mulched" class="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition hover:border-brand-green/50">
+                    <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-gray-300" aria-hidden="true"></span>
+                    <span class="text-sm font-medium text-brand-charcoal">Mulched on the lawn</span>
+                  </label>
+                </div>
+                <div class="clip-option">
+                  <input type="radio" id="clip-bagged" name="clippings" value="bagged" class="sr-only">
+                  <label for="clip-bagged" class="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition hover:border-brand-green/50">
+                    <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-gray-300" aria-hidden="true"></span>
+                    <span class="text-sm font-medium text-brand-charcoal">Bagged and placed in the refuse bin (please leave the bin out)</span>
+                  </label>
+                </div>
+                <div class="clip-option">
+                  <input type="radio" id="clip-other" name="clippings" value="other" class="sr-only">
+                  <label for="clip-other" class="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition hover:border-brand-green/50">
+                    <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-gray-300" aria-hidden="true"></span>
+                    <span class="text-sm font-medium text-brand-charcoal">Other (please describe below)</span>
+                  </label>
+                </div>
+              </div>
+              <div id="clippings-other-wrap" class="mt-3 hidden">
+                <label for="clippings-other" class="mb-1.5 block text-xs font-semibold text-gray-600">
+                  Please describe your clippings preference
+                </label>
+                <input
+                  type="text"
+                  id="clippings-other"
+                  name="clippingsOther"
+                  placeholder="e.g. Leave bags by the side gate"
+                  class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
+                >
+              </div>
+            </fieldset>
+
+            <div>
+              <label for="notes" class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
+                Notes / Special Instructions
+              </label>
+              <p class="mb-2 text-xs leading-relaxed text-gray-500">
+                Helpful for Bromley’s safety and a smooth visit — gate codes, pets, flower beds, access notes, etc.
+              </p>
+              <textarea
+                id="notes"
+                name="notes"
+                rows="5"
+                placeholder="Examples: Gate code is 1234, Please put the dog inside, Watch the flower bed on the left side, Access is through the side gate, etc."
+                class="w-full resize-y rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
+              ></textarea>
+            </div>
           </div>
 
-          <!-- ========== CONTINUE TO CALENDAR CTA ========== -->
+          <!-- ========== PAY TO CONFIRM BOOKING (Stripe Payment Links) ========== -->
           <div class="pt-2">
             <p id="form-error" class="mb-3 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
-            <!-- Opens https://calendly.com/hyperacademy/mowing in a new tab after form validation -->
+
+            <!--
+              TODO: STRIPE PAYMENT LINK — Basic Mow ($18)
+              1. Create a Payment Link in Stripe Dashboard for $18 (Basic Mow).
+              2. Set the success redirect URL to thank-you.html
+                 (e.g. https://fieldscraft.com/thank-you.html).
+              3. Paste the shareable link into STRIPE_PAYMENT_LINK_BASIC in the script below.
+              Example: https://buy.stripe.com/test_XXXX
+            -->
             <button
               type="submit"
-              id="continue-btn"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 sm:text-lg"
+              id="pay-btn-basic"
+              data-service="basic"
+              class="pay-btn inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 sm:text-lg"
             >
-              Continue to Calendar
-              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-              </svg>
+              Pay to Confirm Booking – $18
             </button>
+
+            <!--
+              TODO: STRIPE PAYMENT LINK — Full Yard Service ($25)
+              1. Create a Payment Link in Stripe Dashboard for $25 (Full Yard Service).
+              2. Set the success redirect URL to thank-you.html
+                 (e.g. https://fieldscraft.com/thank-you.html).
+              3. Paste the shareable link into STRIPE_PAYMENT_LINK_FULL in the script below.
+              Example: https://buy.stripe.com/test_YYYY
+            -->
+            <button
+              type="submit"
+              id="pay-btn-full"
+              data-service="full"
+              class="pay-btn hidden inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 sm:text-lg"
+            >
+              Pay to Confirm Booking – $25
+            </button>
+
             <p class="mt-3 text-center text-sm leading-relaxed text-gray-600">
-              After scheduling your time, Ryan will text you to confirm and send the payment link.
+              You will be taken to a secure Stripe checkout. After payment, Ryan will text you to confirm your exact time window.
             </p>
           </div>
         </form>
@@ -406,8 +477,15 @@
   </footer>
 
   <script>
-    // Live Calendly scheduling link (same calendar for both services)
-    const CALENDLY_URL = 'https://calendly.com/hyperacademy/mowing';
+    /*
+     * ========== STRIPE SHAREABLE PAYMENT LINKS ==========
+     * No backend required. Paste your real Payment Link URLs below.
+     * In Stripe Dashboard → Payment Links, set success URL to thank-you.html.
+     */
+    // TODO: STRIPE PAYMENT LINK — Basic Mow ($18) → paste shareable URL here
+    const STRIPE_PAYMENT_LINK_BASIC = 'https://buy.stripe.com/TODO_BASIC_MOW_18';
+    // TODO: STRIPE PAYMENT LINK — Full Yard Service ($25) → paste shareable URL here
+    const STRIPE_PAYMENT_LINK_FULL = 'https://buy.stripe.com/TODO_FULL_YARD_25';
 
     const SERVICES = {
       basic: {
@@ -415,19 +493,18 @@
         title: 'Basic Mow – $18',
         description: 'Mowing only — full lawn mowed evenly with a clean, professional finish.',
         price: '$18',
-        calendly: CALENDLY_URL,
+        paymentLink: STRIPE_PAYMENT_LINK_BASIC,
       },
       full: {
         key: 'full',
         title: 'Full Yard Service – $25',
         description: 'Mowing + Trimming along borders + Blowing',
         price: '$25',
-        calendly: CALENDLY_URL,
+        paymentLink: STRIPE_PAYMENT_LINK_FULL,
       },
     };
 
     // Read ?service=basic or ?service=full (default: basic)
-    // Also support hash like #service=full for file:// edge cases
     function getServiceKey() {
       try {
         const params = new URLSearchParams(window.location.search || '');
@@ -470,6 +547,19 @@
           fullPick.className = 'service-pick rounded-xl border-2 px-4 py-3 text-left transition hover:border-brand-green ' + inactive;
         }
       }
+
+      // Show the matching Pay button for the selected service
+      const payBasic = document.getElementById('pay-btn-basic');
+      const payFull = document.getElementById('pay-btn-full');
+      if (payBasic && payFull) {
+        if (service.key === 'full') {
+          payBasic.classList.add('hidden');
+          payFull.classList.remove('hidden');
+        } else {
+          payFull.classList.add('hidden');
+          payBasic.classList.remove('hidden');
+        }
+      }
     }
 
     applyService(currentService);
@@ -484,7 +574,24 @@
       dateInput.min = yyyy + '-' + mm + '-' + dd;
     }
 
-    // Form submit → open correct Calendly link in new tab
+    // Show optional "Other" text field for clippings preference
+    const clipOtherWrap = document.getElementById('clippings-other-wrap');
+    const clipOtherInput = document.getElementById('clippings-other');
+    document.querySelectorAll('input[name="clippings"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        if (!clipOtherWrap || !clipOtherInput) return;
+        if (radio.value === 'other' && radio.checked) {
+          clipOtherWrap.classList.remove('hidden');
+          clipOtherInput.required = true;
+        } else if (radio.checked) {
+          clipOtherWrap.classList.add('hidden');
+          clipOtherInput.required = false;
+          clipOtherInput.value = '';
+        }
+      });
+    });
+
+    // Form submit → validate → open Stripe Payment Link for selected service
     const form = document.getElementById('booking-form');
     const formError = document.getElementById('form-error');
 
@@ -508,19 +615,19 @@
 
         if (!form.checkValidity()) {
           form.reportValidity();
-          showError('Please fill in all required fields (name, address, phone, email, and date).');
+          showError('Please fill in all required fields, including lawn clippings preference.');
           return;
         }
 
-        const url = currentService.calendly;
-        // Use a temporary link click — more reliable than window.open with popup blockers
-        const a = document.createElement('a');
-        a.href = url;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        const clipChoice = form.querySelector('input[name="clippings"]:checked');
+        if (clipChoice && clipChoice.value === 'other' && clipOtherInput && !clipOtherInput.value.trim()) {
+          showError('Please describe your lawn clippings preference.');
+          clipOtherInput.focus();
+          return;
+        }
+
+        // Redirect to Stripe Shareable Payment Link (no backend required)
+        window.location.href = currentService.paymentLink;
       });
     }
 
