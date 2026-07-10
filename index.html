@@ -1,15 +1,545 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hello World</title>
+  <meta name="description" content="FieldsCraft Lawn Care — reliable lawn mowing and yard care by Bromley in the Kechter Farm neighborhood of Fort Collins, Colorado.">
+  <title>FieldsCraft Lawn Care | Kechter Farm, Fort Collins</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#22c55e',
+              'green-dark': '#16a34a',
+              'green-light': '#dcfce7',
+              charcoal: '#1f2937',
+              gold: '#eab308',
+              'gold-soft': '#fef9c3',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 10px 40px -12px rgba(31, 41, 55, 0.12)',
+            card: '0 4px 24px -4px rgba(31, 41, 55, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; color: #1f2937; }
+    details summary::-webkit-details-marker { display: none; }
+    details[open] summary .faq-chevron { transform: rotate(180deg); }
+  </style>
 </head>
-<body class="min-h-screen flex items-center justify-center">
-  <div class="text-center">
-    <p class="text-2xl font-medium">Hello World</p>
-    <p class="text-xl mt-2">Bromley is Here!</p>
-  </div>
+<body class="bg-white antialiased">
+
+  <!-- ========== HEADER / NAVIGATION ========== -->
+  <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+      <!-- Logo -->
+      <a href="#home" class="group flex items-center gap-2.5">
+        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-green text-white shadow-sm" aria-hidden="true">
+          <!-- Tasteful grass / blade icon -->
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 20c1.5-4 2-8 1-14 3 3 4 7 4 11" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 20c.8-3.5 1.2-7 .5-12 2.5 2.5 3.5 6 3.5 10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 20c.6-2.5 1-5.5.5-9 2 2 2.5 4.5 2.5 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 20h16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="text-lg font-bold tracking-tight text-brand-charcoal sm:text-xl">
+          FieldsCraft
+        </span>
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="hidden items-center gap-8 text-sm font-medium text-gray-600 md:flex" aria-label="Primary">
+        <a href="#home" class="transition hover:text-brand-green">Home</a>
+        <a href="#services" class="transition hover:text-brand-green">Services</a>
+        <a href="#about" class="transition hover:text-brand-green">About</a>
+        <a href="#faq" class="transition hover:text-brand-green">FAQ</a>
+      </nav>
+
+      <!-- Mobile menu toggle -->
+      <button
+        type="button"
+        id="menu-toggle"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-brand-charcoal md:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Open menu"
+      >
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden border-t border-gray-100 bg-white md:hidden">
+      <nav class="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-3 text-sm font-medium text-gray-700 sm:px-6" aria-label="Mobile">
+        <a href="#home" class="rounded-lg px-3 py-2.5 hover:bg-brand-green-light hover:text-brand-green">Home</a>
+        <a href="#services" class="rounded-lg px-3 py-2.5 hover:bg-brand-green-light hover:text-brand-green">Services</a>
+        <a href="#about" class="rounded-lg px-3 py-2.5 hover:bg-brand-green-light hover:text-brand-green">About</a>
+        <a href="#faq" class="rounded-lg px-3 py-2.5 hover:bg-brand-green-light hover:text-brand-green">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========== HERO SECTION ========== -->
+    <section id="home" class="relative overflow-hidden bg-gradient-to-b from-brand-green-light/40 to-white">
+      <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:gap-14 lg:px-8 lg:py-20">
+        <!-- Copy -->
+        <div class="order-2 lg:order-1">
+          <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-brand-green/20 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand-green shadow-sm">
+            <span class="h-1.5 w-1.5 rounded-full bg-brand-gold" aria-hidden="true"></span>
+            Kechter Farm · Fort Collins
+          </div>
+          <h1 class="text-3xl font-extrabold leading-tight tracking-tight text-brand-charcoal sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
+            Reliable Lawn Care by a Responsible Young Neighbor
+          </h1>
+          <p class="mt-5 max-w-xl text-base leading-relaxed text-gray-600 sm:text-lg">
+            Quality mowing and yard care from Bromley, a 10-year-old in the Kechter Farm neighborhood of Fort Collins
+          </p>
+          <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <!-- STRIPE PAYMENT LINK: Replace href with Basic Mow ($18) Stripe Payment Link -->
+            <a
+              href="#pricing"
+              data-stripe-placeholder="basic-mow-18"
+              class="inline-flex items-center justify-center rounded-xl bg-brand-green px-6 py-3.5 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
+            >
+              Book Basic Mow – $18
+            </a>
+            <!-- STRIPE PAYMENT LINK: Replace href with Full Yard Service ($25) Stripe Payment Link -->
+            <a
+              href="#pricing"
+              data-stripe-placeholder="full-yard-25"
+              class="inline-flex items-center justify-center rounded-xl border-2 border-brand-green bg-white px-6 py-3.5 text-base font-semibold text-brand-green transition hover:bg-brand-green-light focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
+            >
+              Book Full Yard Service – $25
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero photo -->
+        <div class="order-1 lg:order-2">
+          <div class="relative overflow-hidden rounded-2xl shadow-soft ring-1 ring-black/5">
+            <img
+              src="images/hero-bromley.jpg"
+              alt="Bromley mowing a lawn in Kechter Farm"
+              width="1920"
+              height="1440"
+              class="aspect-[4/3] w-full object-cover object-center sm:aspect-[5/4] lg:aspect-[4/3]"
+              fetchpriority="high"
+            >
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-charcoal/20 via-transparent to-transparent"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== PRICING SECTION ========== -->
+    <section id="pricing" class="scroll-mt-20 border-t border-gray-100 bg-white py-16 sm:py-20">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Services</p>
+          <h2 id="services" class="mt-2 scroll-mt-24 text-3xl font-bold tracking-tight text-brand-charcoal sm:text-4xl">
+            Simple, Transparent Pricing
+          </h2>
+          <p class="mt-3 text-gray-600">No surprises — just neat, careful work at a fair neighborhood rate.</p>
+        </div>
+
+        <div class="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
+          <!-- Basic Mow card -->
+          <article class="flex flex-col rounded-2xl border border-gray-100 bg-white p-7 shadow-card ring-1 ring-gray-50 transition hover:shadow-soft">
+            <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green-light text-brand-green" aria-hidden="true">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-1.5 4-3 7-6 10h12c-3-3-4.5-6-6-10zM6 20h12"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-brand-charcoal">Basic Mow</h3>
+            <p class="mt-1 text-sm text-gray-500">Mowing only</p>
+            <p class="mt-5">
+              <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$18</span>
+              <span class="text-sm font-medium text-gray-500"> / visit</span>
+            </p>
+            <ul class="mt-5 flex-1 space-y-2.5 text-sm text-gray-600">
+              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Full lawn mowed evenly</li>
+              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Clean, professional finish</li>
+              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Perfect for regular upkeep</li>
+            </ul>
+            <!-- STRIPE PAYMENT LINK: Replace href with Basic Mow ($18) Stripe Payment Link -->
+            <a
+              href="#"
+              data-stripe-placeholder="basic-mow-18"
+              class="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-5 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
+            >
+              Book Now
+            </a>
+          </article>
+
+          <!-- Full Yard Service card -->
+          <article class="relative flex flex-col rounded-2xl border-2 border-brand-green bg-white p-7 shadow-soft">
+            <span class="absolute -top-3 right-5 rounded-full bg-brand-gold px-3 py-0.5 text-xs font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
+              Most Popular
+            </span>
+            <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green text-white" aria-hidden="true">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-brand-charcoal">Full Yard Service</h3>
+            <p class="mt-1 text-sm text-gray-500">Mowing + Trimming along borders + Blowing</p>
+            <p class="mt-5">
+              <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$25</span>
+              <span class="text-sm font-medium text-gray-500"> / visit</span>
+            </p>
+            <ul class="mt-5 flex-1 space-y-2.5 text-sm text-gray-600">
+              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Everything in Basic Mow</li>
+              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Trimming along borders</li>
+              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Blow off walkways &amp; driveways</li>
+            </ul>
+            <!-- STRIPE PAYMENT LINK: Replace href with Full Yard Service ($25) Stripe Payment Link -->
+            <a
+              href="#"
+              data-stripe-placeholder="full-yard-25"
+              class="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-5 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
+            >
+              Book Now
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ADD-ONS SECTION ========== -->
+    <section id="addons" class="scroll-mt-20 bg-gray-50 py-16 sm:py-20">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Optional extras</p>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-brand-charcoal sm:text-4xl">
+            Want to Add a Little Extra?
+          </h2>
+          <p class="mt-3 text-gray-600">These popular add-ons can be added when you book.</p>
+        </div>
+
+        <div class="mx-auto mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">
+          <!-- Water My Flowers -->
+          <article class="flex flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-card">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="text-lg font-bold text-brand-charcoal">Water My Flowers</h3>
+                <p class="mt-1 text-sm text-gray-500">Beds &amp; planters given a careful drink</p>
+              </div>
+              <span class="shrink-0 rounded-lg bg-brand-gold-soft px-2.5 py-1 text-sm font-bold text-brand-charcoal">$7</span>
+            </div>
+          </article>
+
+          <!-- Dog Poop Pickup -->
+          <article class="flex flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-card">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="text-lg font-bold text-brand-charcoal">Dog Poop Pickup</h3>
+                <p class="mt-1 text-sm text-gray-500">Yard scooped clean before mowing</p>
+              </div>
+              <span class="shrink-0 rounded-lg bg-brand-gold-soft px-2.5 py-1 text-sm font-bold text-brand-charcoal">$15</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== HOW IT WORKS ========== -->
+    <section id="how-it-works" class="scroll-mt-20 bg-white py-16 sm:py-20">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Process</p>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-brand-charcoal sm:text-4xl">
+            How It Works
+          </h2>
+        </div>
+
+        <ol class="mx-auto mt-12 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <li class="relative rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-card">
+            <span class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">1</span>
+            <h3 class="mt-4 text-base font-bold text-brand-charcoal">Request Service</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">Book Online</p>
+          </li>
+          <li class="relative rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-card">
+            <span class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">2</span>
+            <h3 class="mt-4 text-base font-bold text-brand-charcoal">We Confirm Quickly</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">You’ll get a clear confirmation with day and time.</p>
+          </li>
+          <li class="relative rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-card">
+            <span class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">3</span>
+            <h3 class="mt-4 text-base font-bold text-brand-charcoal">Bromley Delivers Great Results</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">Neat, careful mowing with pride in every yard.</p>
+          </li>
+          <li class="relative rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-card">
+            <span class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">4</span>
+            <h3 class="mt-4 text-base font-bold text-brand-charcoal">Enjoy Your Beautiful Yard</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">Come home to a clean, freshly cared-for lawn.</p>
+          </li>
+        </ol>
+
+        <!-- Book Now CTA after How It Works -->
+        <div class="mt-12 text-center">
+          <a
+            href="#pricing"
+            class="inline-flex items-center justify-center rounded-xl bg-brand-green px-8 py-3.5 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
+          >
+            Book Now
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== ABOUT BROMLEY ========== -->
+    <section id="about" class="scroll-mt-20 border-t border-gray-100 bg-gradient-to-b from-brand-green-light/30 to-white py-16 sm:py-20">
+      <div class="mx-auto grid max-w-6xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-5 lg:gap-14 lg:px-8">
+        <div class="lg:col-span-2">
+          <div class="mx-auto max-w-sm overflow-hidden rounded-2xl shadow-soft ring-1 ring-black/5 lg:mx-0">
+            <img
+              src="images/bromley-about.jpg"
+              alt="Bromley mowing a lawn in Kechter Farm"
+              width="800"
+              height="600"
+              class="aspect-square w-full object-cover object-center"
+              loading="lazy"
+            >
+          </div>
+        </div>
+        <div class="lg:col-span-3">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">About</p>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-brand-charcoal sm:text-4xl">
+            Meet Bromley
+          </h2>
+          <div class="mt-6 space-y-4 text-base leading-relaxed text-gray-600 sm:text-lg">
+            <p>
+              Hi, I'm Bromley! I'm 10 years old and I take pride in doing neat, careful work on every yard. I use my Greenworks electric mower. I transport my equipment to each job on the custom bicycle trailer my dad and I built together. My dad Ryan helps with scheduling and is always nearby if needed. We're happy to help our neighbors in Kechter Farm have great-looking yards this summer.
+            </p>
+          </div>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <span class="inline-flex items-center rounded-full bg-white px-3.5 py-1.5 text-sm font-medium text-brand-charcoal shadow-sm ring-1 ring-gray-100">
+              <span class="mr-2 h-2 w-2 rounded-full bg-brand-green" aria-hidden="true"></span>
+              Electric mower
+            </span>
+            <span class="inline-flex items-center rounded-full bg-white px-3.5 py-1.5 text-sm font-medium text-brand-charcoal shadow-sm ring-1 ring-gray-100">
+              <span class="mr-2 h-2 w-2 rounded-full bg-brand-gold" aria-hidden="true"></span>
+              Dad-supported
+            </span>
+            <span class="inline-flex items-center rounded-full bg-white px-3.5 py-1.5 text-sm font-medium text-brand-charcoal shadow-sm ring-1 ring-gray-100">
+              <span class="mr-2 h-2 w-2 rounded-full bg-brand-green" aria-hidden="true"></span>
+              Kechter Farm local
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FAQ SECTION ========== -->
+    <section id="faq" class="scroll-mt-20 bg-white py-16 sm:py-20">
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Support</p>
+          <h2 class="mt-2 text-3xl font-bold tracking-tight text-brand-charcoal sm:text-4xl">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div class="mt-10 space-y-3">
+          <details class="group rounded-2xl border border-gray-100 bg-gray-50/80 open:bg-white open:shadow-card">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-brand-charcoal">
+              How do I book a service?
+              <svg class="faq-chevron h-5 w-5 shrink-0 text-gray-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <div class="border-t border-gray-100 px-5 pb-5 pt-3 text-sm leading-relaxed text-gray-600">
+              Choose a service above and click <strong>Book Now</strong>. Everything is booked online — you’ll get a quick confirmation with the planned visit time through secure checkout.
+            </div>
+          </details>
+
+          <details class="group rounded-2xl border border-gray-100 bg-gray-50/80 open:bg-white open:shadow-card">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-brand-charcoal">
+              What areas do you serve?
+              <svg class="faq-chevron h-5 w-5 shrink-0 text-gray-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <div class="border-t border-gray-100 px-5 pb-5 pt-3 text-sm leading-relaxed text-gray-600">
+              We primarily serve the Kechter Farm neighborhood in Fort Collins, plus nearby surrounding streets.
+            </div>
+          </details>
+
+          <details class="group rounded-2xl border border-gray-100 bg-gray-50/80 open:bg-white open:shadow-card">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-brand-charcoal">
+              Is Bromley supervised?
+              <svg class="faq-chevron h-5 w-5 shrink-0 text-gray-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <div class="border-t border-gray-100 px-5 pb-5 pt-3 text-sm leading-relaxed text-gray-600">
+              Yes, Bromley does the mowing and takes pride in neat, careful work. His dad Ryan helps with scheduling and is always within reach if anything is needed.
+            </div>
+          </details>
+
+          <details class="group rounded-2xl border border-gray-100 bg-gray-50/80 open:bg-white open:shadow-card">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-brand-charcoal">
+              What if it rains?
+              <svg class="faq-chevron h-5 w-5 shrink-0 text-gray-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <div class="border-t border-gray-100 px-5 pb-5 pt-3 text-sm leading-relaxed text-gray-600">
+              Safety and quality come first. If weather makes mowing unsafe or messy, we’ll reschedule for the next good day and keep you updated. No stress on your end.
+            </div>
+          </details>
+
+          <details class="group rounded-2xl border border-gray-100 bg-gray-50/80 open:bg-white open:shadow-card">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-brand-charcoal">
+              What equipment do you use?
+              <svg class="faq-chevron h-5 w-5 shrink-0 text-gray-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <div class="border-t border-gray-100 px-5 pb-5 pt-3 text-sm leading-relaxed text-gray-600">
+              Bromley uses a <strong>Greenworks electric mower</strong> — quieter and cleaner for the neighborhood. Full Yard Service also includes trimming and blowing walkways and driveways.
+            </div>
+          </details>
+
+          <details class="group rounded-2xl border border-gray-100 bg-gray-50/80 open:bg-white open:shadow-card">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-brand-charcoal">
+              Can I tip or leave a review?
+              <svg class="faq-chevron h-5 w-5 shrink-0 text-gray-400 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <div class="border-t border-gray-100 px-5 pb-5 pt-3 text-sm leading-relaxed text-gray-600">
+              Absolutely. Many neighbors add a tip at checkout to thank Bromley for great work. Kind words and referrals to other Kechter Farm neighbors are always appreciated, too.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== FINAL CTA ========== -->
+    <section class="bg-brand-charcoal py-14 sm:py-16">
+      <div class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+          Ready for a cleaner, greener yard?
+        </h2>
+        <p class="mx-auto mt-3 max-w-xl text-gray-300">
+          Book a Basic Mow or Full Yard Service today — neighbors in Kechter Farm are always welcome.
+        </p>
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <!-- STRIPE PAYMENT LINK: Replace href with Basic Mow ($18) Stripe Payment Link -->
+          <a
+            href="#pricing"
+            data-stripe-placeholder="basic-mow-18"
+            class="inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-6 py-3.5 text-base font-semibold text-white transition hover:bg-brand-green-dark sm:w-auto"
+          >
+            Book Basic Mow – $18
+          </a>
+          <!-- STRIPE PAYMENT LINK: Replace href with Full Yard Service ($25) Stripe Payment Link -->
+          <a
+            href="#pricing"
+            data-stripe-placeholder="full-yard-25"
+            class="inline-flex w-full items-center justify-center rounded-xl border-2 border-white/30 bg-transparent px-6 py-3.5 text-base font-semibold text-white transition hover:border-white hover:bg-white/10 sm:w-auto"
+          >
+            Book Full Yard Service – $25
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="border-t border-gray-100 bg-white">
+    <div class="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
+      <!-- Brand + contact -->
+      <div>
+        <div class="flex items-center gap-2.5">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-green text-white" aria-hidden="true">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 20c1.5-4 2-8 1-14 3 3 4 7 4 11" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+              <path d="M12 20c.8-3.5 1.2-7 .5-12 2.5 2.5 3.5 6 3.5 10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+              <path d="M17 20c.6-2.5 1-5.5.5-9 2 2 2.5 4.5 2.5 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+              <path d="M4 20h16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="text-lg font-bold text-brand-charcoal">FieldsCraft Lawn Care</span>
+        </div>
+        <p class="mt-4 text-sm text-gray-500">
+          Service area: Kechter Farm &amp; surrounding Fort Collins neighborhoods
+        </p>
+      </div>
+
+      <!-- Quick links -->
+      <div>
+        <h3 class="text-sm font-bold uppercase tracking-wider text-brand-charcoal">Quick links</h3>
+        <ul class="mt-4 space-y-2 text-sm text-gray-600">
+          <li><a href="#services" class="hover:text-brand-green">Services &amp; Pricing</a></li>
+          <li><a href="#addons" class="hover:text-brand-green">Add-Ons</a></li>
+          <li><a href="#about" class="hover:text-brand-green">About Bromley</a></li>
+          <li><a href="#faq" class="hover:text-brand-green">FAQ</a></li>
+        </ul>
+      </div>
+
+      <!-- QR placeholder -->
+      <div class="flex flex-col items-start md:items-end">
+        <!-- Replace this placeholder with a real QR code image linking to booking / homepage -->
+        <div
+          class="flex h-40 w-40 items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50"
+          role="img"
+          aria-label="QR code placeholder"
+        >
+          <svg class="h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v7H3V3zm11 0h7v7h-7V3zM3 14h7v7H3v-7zm14 0h1v1h-1v-1zm-3 0h1v1h-1v-1zm3 3h1v1h-1v-1zm0 3h1v1h-1v-1zm-3-3h1v4h-1v-4z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-100 py-5">
+      <p class="text-center text-xs text-gray-400">
+        &copy; <span id="year"></span> FieldsCraft Lawn Care. All rights reserved. · Fort Collins, Colorado
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', () => {
+        const open = menu.classList.toggle('hidden') === false;
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      });
+      menu.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          menu.classList.add('hidden');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.setAttribute('aria-label', 'Open menu');
+        });
+      });
+    }
+
+    // Dynamic year
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  </script>
 </body>
 </html>
