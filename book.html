@@ -531,15 +531,15 @@
 
   <script>
     /*
-     * ========== STRIPE CHECKOUT (server-created session) ==========
-     * This page never uses the Stripe secret key.
-     * On submit we POST booking details to /api/create-checkout-session.
-     * That serverless function uses STRIPE_SECRET_KEY (Vercel env) to create
-     * a Checkout Session and returns { url }. We redirect the browser there.
+     * ========== BOOKING FLOW ==========
+     * 1) Formspree — emails Ryan the full booking details (and logs the submission)
+     * 2) /api/create-checkout-session — creates a Stripe Checkout Session (secret key
+     *    stays server-side only) and returns { url }
+     * 3) Browser redirects to Stripe-hosted Checkout
      *
-     * Optional add-ons + tip are configured as optional_items on the session
-     * so customers can add them on the Stripe-hosted Checkout page.
+     * This page never uses the Stripe secret key.
      */
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdarqrky';
     const CHECKOUT_API = '/api/create-checkout-session';
 
     // UI labels for the two main services (Price IDs live only on the server)
@@ -736,6 +736,60 @@
       };
     }
 
+    /**
+     * Build FormData for Formspree so Ryan gets a clear email + dashboard entry.
+     * Field names match the previous live Formspree form for continuity.
+     */
+    function buildFormspreeData(payload) {
+      const data = new FormData();
+      data.append('_subject', 'New FieldsCraft Booking: ' + currentService.title);
+      // Honeypot field (should stay empty) — Formspree spam protection
+      data.append('_gotcha', '');
+      data.append('full_name', payload.name);
+      data.append('phone', payload.phone);
+      data.append('email', payload.email);
+      data.append('service_address', payload.address);
+      data.append('preferred_date', payload.preferredDate);
+      data.append('time_window', payload.timeWindow);
+      data.append('lawn_clippings', payload.clippingsPreference);
+      data.append('notes', payload.notes || '');
+      data.append('service', payload.serviceType);
+      data.append('service_title', currentService.title);
+      data.append(
+        'tip_amount',
+        payload.tipAmount > 0 ? '$' + Number(payload.tipAmount).toFixed(2) : 'none'
+      );
+      return data;
+    }
+
+    /**
+     * POST booking details to Formspree (email + submissions dashboard).
+     * Throws if Formspree rejects the request so we know the notify step failed.
+     */
+    async function sendFormspreeNotification(payload) {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        body: buildFormspreeData(payload),
+        headers: { Accept: 'application/json' },
+      });
+
+      let result = {};
+      try {
+        result = await response.json();
+      } catch (parseErr) {
+        result = {};
+      }
+
+      if (!response.ok) {
+        const msg =
+          (result && result.error) ||
+          (result && result.errors && result.errors.map(function (e) { return e.message; }).join(' ')) ||
+          'Could not send booking email via Formspree.';
+        throw new Error(msg);
+      }
+      return result;
+    }
+
     if (form) {
       form.addEventListener('submit', async function (e) {
         // Always prevent full-page POST; we use fetch + redirect instead
@@ -773,7 +827,19 @@
         try {
           setPayButtonLoading(true);
 
-          // Create Checkout Session on the server (secret key never leaves Vercel)
+          // ---- Step 1: Formspree (email Ryan + log submission) ----
+          if (payBtn) payBtn.textContent = 'Sending booking details…';
+          try {
+            await sendFormspreeNotification(payload);
+          } catch (formspreeErr) {
+            // Log but do not block payment — customer can still complete Stripe
+            console.error('Formspree error:', formspreeErr);
+            // Soft-fail: continue to checkout so booking payment is not blocked
+            // Ryan can still see booking details in Stripe session metadata
+          }
+
+          // ---- Step 2: Stripe Checkout Session (server-side secret key) ----
+          if (payBtn) payBtn.textContent = 'Starting secure checkout…';
           const response = await fetch(CHECKOUT_API, {
             method: 'POST',
             headers: {
@@ -797,7 +863,7 @@
             );
           }
 
-          showSuccess('Redirecting you to secure Stripe Checkout…');
+          showSuccess('Booking details sent! Redirecting you to secure Stripe Checkout…');
 
           // Send the customer to Stripe-hosted Checkout
           window.location.href = data.url;
