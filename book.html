@@ -200,16 +200,19 @@
           <p class="mt-1 text-sm text-gray-500">So we can schedule accurately and reach you quickly.</p>
         </div>
 
+        <!--
+          Booking form → POST JSON to /api/create-checkout-session (Vercel serverless)
+          which creates a Stripe Checkout Session and returns a redirect URL.
+          Secret key stays server-side only — never used in this frontend file.
+        -->
         <form
           id="booking-form"
           class="space-y-6"
-          action="https://formspree.io/f/mdarqrky"
           method="POST"
+          action="/api/create-checkout-session"
           novalidate
         >
-          <!-- Formspree helpers -->
-          <input type="hidden" name="_subject" id="form-subject" value="New FieldsCraft Booking">
-          <input type="hidden" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+          <!-- Hidden fields track which main service the customer selected -->
           <input type="hidden" id="service-type" name="service" value="basic">
           <input type="hidden" id="service-title-field" name="service_title" value="Basic Mow – $18">
 
@@ -384,35 +387,24 @@
             </div>
           </div>
 
-          <!-- ========== PAY TO CONFIRM BOOKING (Stripe Payment Links) ========== -->
+          <!-- ========== SUBMIT → CREATE STRIPE CHECKOUT SESSION ========== -->
           <div class="pt-2">
             <p id="form-error" class="mb-3 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
             <p id="form-success" class="mb-3 hidden rounded-xl border border-brand-green/30 bg-brand-green-light px-4 py-3 text-sm text-brand-charcoal" role="status"></p>
 
-            <!-- Stripe Payment Link — Basic Mow ($18): shown when ?service=basic
-                 Live link: https://buy.stripe.com/eVqcN6dRCbs47UJd4G5kk01 -->
+            <!-- Single pay button; label updates when Basic vs Full is selected -->
             <button
               type="submit"
-              id="pay-btn-basic"
-              data-service="basic"
+              id="pay-btn"
               class="pay-btn inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:text-lg"
             >
-              Pay to Confirm Booking – $18
-            </button>
-
-            <!-- Stripe Payment Link — Full Yard Service ($25): shown when ?service=full
-                 Live link: https://buy.stripe.com/00w3cweVGbs45MB8Oq5kk00 -->
-            <button
-              type="submit"
-              id="pay-btn-full"
-              data-service="full"
-              class="pay-btn hidden inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:text-lg"
-            >
-              Pay to Confirm Booking – $25
+              Submit Booking &amp; Pay – $18
             </button>
 
             <p class="mt-3 text-center text-sm leading-relaxed text-gray-600">
-              You will be taken to a secure Stripe checkout. After payment, Ryan will text you within 24 hours from 303.906.8597 to confirm your exact time window.
+              You will be taken to secure Stripe Checkout. There you can add optional extras
+              (Flower Watering, Dog Poop Pickup) or a tip for Bromley. After payment, Ryan will
+              text you within 24 hours from 303.906.8597 to confirm your exact time window.
             </p>
           </div>
         </form>
@@ -477,38 +469,32 @@
 
   <script>
     /*
-     * ========== FORMSPREE ==========
-     * Live endpoint — emails Ryan with full booking details on submit.
+     * ========== STRIPE CHECKOUT (server-created session) ==========
+     * This page never uses the Stripe secret key.
+     * On submit we POST booking details to /api/create-checkout-session.
+     * That serverless function uses STRIPE_SECRET_KEY (Vercel env) to create
+     * a Checkout Session and returns { url }. We redirect the browser there.
+     *
+     * Optional add-ons + tip are configured as optional_items on the session
+     * so customers can add them on the Stripe-hosted Checkout page.
      */
-    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdarqrky';
+    const CHECKOUT_API = '/api/create-checkout-session';
 
-    /*
-     * ========== STRIPE LIVE PAYMENT LINKS ==========
-     * After payment, Stripe should redirect to thank-you.html.
-     * Set this once per Payment Link in Stripe Dashboard:
-     *   Payment Links → [link] → After payment → Don't show confirmation page
-     *   → Redirect to: https://fieldscraft.com/thank-you.html
-     *   (or your Vercel URL + /thank-you.html while testing)
-     */
-    // Stripe Payment Link — Basic Mow ($18)
-    const STRIPE_PAYMENT_LINK_BASIC = 'https://buy.stripe.com/eVqcN6dRCbs47UJd4G5kk01';
-    // Stripe Payment Link — Full Yard Service ($25)
-    const STRIPE_PAYMENT_LINK_FULL = 'https://buy.stripe.com/00w3cweVGbs45MB8Oq5kk00';
-
+    // UI labels for the two main services (Price IDs live only on the server)
     const SERVICES = {
       basic: {
         key: 'basic',
         title: 'Basic Mow – $18',
         description: 'Mowing only — full lawn mowed evenly with a clean, professional finish.',
         price: '$18',
-        paymentLink: STRIPE_PAYMENT_LINK_BASIC,
+        buttonLabel: 'Submit Booking & Pay – $18',
       },
       full: {
         key: 'full',
         title: 'Full Yard Service – $25',
         description: 'Mowing + Trimming along borders + Blowing',
         price: '$25',
-        paymentLink: STRIPE_PAYMENT_LINK_FULL,
+        buttonLabel: 'Submit Booking & Pay – $25',
       },
     };
 
@@ -529,6 +515,7 @@
 
     let currentService = SERVICES[getServiceKey()];
 
+    /** Update summary card + pay button when Basic / Full is selected */
     function applyService(service) {
       currentService = service;
       const titleEl = document.getElementById('service-title');
@@ -536,19 +523,17 @@
       const priceEl = document.getElementById('service-price-badge');
       const typeEl = document.getElementById('service-type');
       const serviceTitleField = document.getElementById('service-title-field');
-      const subjectField = document.getElementById('form-subject');
+      const payBtn = document.getElementById('pay-btn');
 
       if (titleEl) titleEl.textContent = service.title;
       if (descEl) descEl.textContent = service.description;
       if (priceEl) priceEl.textContent = service.price;
       if (typeEl) typeEl.value = service.key;
       if (serviceTitleField) serviceTitleField.value = service.title;
-      if (subjectField) {
-        subjectField.value = 'New FieldsCraft Booking: ' + service.title;
-      }
+      if (payBtn) payBtn.textContent = service.buttonLabel;
       document.title = 'Book ' + service.title + ' | FieldsCraft Lawn Care';
 
-      // Highlight active service pick
+      // Highlight active service pick cards
       const basicPick = document.getElementById('pick-basic');
       const fullPick = document.getElementById('pick-full');
       const active = 'border-brand-green bg-brand-green-light ring-1 ring-brand-green';
@@ -562,24 +547,11 @@
           fullPick.className = 'service-pick rounded-xl border-2 px-4 py-3 text-left transition hover:border-brand-green ' + inactive;
         }
       }
-
-      // Show the matching Pay button for the selected service
-      const payBasic = document.getElementById('pay-btn-basic');
-      const payFull = document.getElementById('pay-btn-full');
-      if (payBasic && payFull) {
-        if (service.key === 'full') {
-          payBasic.classList.add('hidden');
-          payFull.classList.remove('hidden');
-        } else {
-          payFull.classList.add('hidden');
-          payBasic.classList.remove('hidden');
-        }
-      }
     }
 
     applyService(currentService);
 
-    // Prevent past dates on date picker
+    // Prevent past dates on the preferred-date picker
     const dateInput = document.getElementById('preferred-date');
     if (dateInput) {
       const today = new Date();
@@ -606,11 +578,11 @@
       });
     });
 
-    // Form submit → validate → Formspree email → Stripe Payment Link
+    // ---- Form UI helpers ----
     const form = document.getElementById('booking-form');
     const formError = document.getElementById('form-error');
     const formSuccess = document.getElementById('form-success');
-    const payButtons = document.querySelectorAll('.pay-btn');
+    const payBtn = document.getElementById('pay-btn');
 
     function showError(msg) {
       if (formSuccess) formSuccess.classList.add('hidden');
@@ -633,32 +605,58 @@
       formSuccess.classList.remove('hidden');
     }
 
-    function setPayButtonsLoading(isLoading) {
-      payButtons.forEach(function (btn) {
-        btn.disabled = isLoading;
-        if (isLoading) {
-          btn.dataset.originalText = btn.textContent.trim();
-          btn.textContent = 'Sending booking details…';
-        } else if (btn.dataset.originalText) {
-          btn.textContent = btn.dataset.originalText;
-        }
-      });
+    function setPayButtonLoading(isLoading) {
+      if (!payBtn) return;
+      payBtn.disabled = isLoading;
+      if (isLoading) {
+        payBtn.dataset.originalText = payBtn.textContent.trim();
+        payBtn.textContent = 'Starting secure checkout…';
+      } else if (payBtn.dataset.originalText) {
+        payBtn.textContent = payBtn.dataset.originalText;
+      }
+    }
+
+    /**
+     * Collect all booking fields into the JSON shape expected by
+     * /api/create-checkout-session (name, phone, email, address, etc.)
+     */
+    function collectBookingPayload() {
+      const clipChoice = form.querySelector('input[name="lawn_clippings"]:checked');
+      let clippingsPreference = clipChoice ? clipChoice.value : '';
+      // If "Other", append the free-text description
+      if (clippingsPreference.indexOf('Other') === 0 && clipOtherInput && clipOtherInput.value.trim()) {
+        clippingsPreference = 'Other: ' + clipOtherInput.value.trim();
+      }
+
+      const timeChoice = form.querySelector('input[name="time_window"]:checked');
+
+      return {
+        name: (document.getElementById('full-name') || {}).value || '',
+        phone: (document.getElementById('phone') || {}).value || '',
+        email: (document.getElementById('email') || {}).value || '',
+        address: (document.getElementById('address') || {}).value || '',
+        preferredDate: (document.getElementById('preferred-date') || {}).value || '',
+        timeWindow: timeChoice ? timeChoice.value : '',
+        clippingsPreference: clippingsPreference,
+        notes: (document.getElementById('notes') || {}).value || '',
+        serviceType: currentService.key,
+      };
     }
 
     if (form) {
-      // Keep form action in sync with FORMSPREE_ENDPOINT
-      form.setAttribute('action', FORMSPREE_ENDPOINT);
-
       form.addEventListener('submit', async function (e) {
+        // Always prevent full-page POST; we use fetch + redirect instead
         e.preventDefault();
         hideError();
 
+        // HTML5 required fields (name, phone, email, address, date, clippings, etc.)
         if (!form.checkValidity()) {
           form.reportValidity();
           showError('Please fill in all required fields, including lawn clippings preference.');
           return;
         }
 
+        // Extra check: "Other" clippings needs a description
         const clipChoice = form.querySelector('input[name="lawn_clippings"]:checked');
         if (
           clipChoice &&
@@ -671,47 +669,48 @@
           return;
         }
 
-        // Guard: Formspree endpoint must be configured before go-live
-        if (!FORMSPREE_ENDPOINT || FORMSPREE_ENDPOINT.indexOf('YOUR_FORM_ID') !== -1) {
-          showError(
-            'Formspree is not configured yet. Add your Formspree form ID, then try again. (You can still test Stripe separately.)'
-          );
-          return;
-        }
+        // Keep hidden service fields in sync
+        const typeEl = document.getElementById('service-type');
+        const serviceTitleField = document.getElementById('service-title-field');
+        if (typeEl) typeEl.value = currentService.key;
+        if (serviceTitleField) serviceTitleField.value = currentService.title;
+
+        const payload = collectBookingPayload();
 
         try {
-          setPayButtonsLoading(true);
+          setPayButtonLoading(true);
 
-          // Ensure service fields are current before send
-          const typeEl = document.getElementById('service-type');
-          const serviceTitleField = document.querySelector('input[name="service_title"]');
-          const subjectField = document.getElementById('form-subject');
-          if (typeEl) typeEl.value = currentService.key;
-          if (serviceTitleField) serviceTitleField.value = currentService.title;
-          if (subjectField) {
-            subjectField.value = 'New FieldsCraft Booking: ' + currentService.title;
-          }
-
-          const formData = new FormData(form);
-
-          // POST booking details to Formspree (emails Ryan)
-          const response = await fetch(FORMSPREE_ENDPOINT, {
+          // Create Checkout Session on the server (secret key never leaves Vercel)
+          const response = await fetch(CHECKOUT_API, {
             method: 'POST',
-            body: formData,
-            headers: { Accept: 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: JSON.stringify(payload),
           });
 
-          if (!response.ok) {
-            throw new Error('Could not send booking details. Please try again or text Ryan at 303.906.8597.');
+          let data = {};
+          try {
+            data = await response.json();
+          } catch (parseErr) {
+            data = {};
           }
 
-          showSuccess('Booking details sent! Redirecting you to secure Stripe checkout…');
+          if (!response.ok || !data.url) {
+            throw new Error(
+              (data && data.error) ||
+                'Could not start checkout. Please try again or text Ryan at 303.906.8597.'
+            );
+          }
 
-          // After Formspree success → Pay First: open live Stripe Payment Link
-          window.location.href = currentService.paymentLink;
+          showSuccess('Redirecting you to secure Stripe Checkout…');
+
+          // Send the customer to Stripe-hosted Checkout
+          window.location.href = data.url;
         } catch (err) {
           console.error(err);
-          setPayButtonsLoading(false);
+          setPayButtonLoading(false);
           showError(
             (err && err.message) ||
               'Something went wrong. Please try again or text Ryan at 303.906.8597.'
@@ -738,7 +737,7 @@
       });
     }
 
-    // Dynamic year
+    // Dynamic year in footer
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
   </script>

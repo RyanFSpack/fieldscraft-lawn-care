@@ -1,0 +1,12 @@
+{
+  "name": "fieldscraft-lawn-care",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FieldsCraft Lawn Care — static site with Stripe Checkout Sessions on Vercel",
+  "dependencies": {
+    "stripe": "^18.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

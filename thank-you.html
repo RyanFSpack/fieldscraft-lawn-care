@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    Post-payment landing page.
+    Stripe redirects here after a successful Checkout Session:
+      success_url → /thank-you.html?session_id={CHECKOUT_SESSION_ID}
+    We thank the customer and set expectations for Ryan’s confirmation text.
+  -->
   <meta name="description" content="Thank you for booking FieldsCraft Lawn Care. Ryan will text you within 24 hours to confirm your time window.">
   <meta name="robots" content="noindex">
   <title>Thank You | FieldsCraft Lawn Care</title>
@@ -65,23 +71,26 @@
   </header>
 
   <main>
+    <!-- Hero thank-you message -->
     <section class="border-b border-gray-100 bg-gradient-to-b from-brand-green-light/40 to-white">
       <div class="mx-auto max-w-2xl px-4 py-14 text-center sm:px-6 sm:py-20 lg:px-8">
+        <!-- Success checkmark -->
         <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-brand-green text-white shadow-soft" aria-hidden="true">
           <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
           </svg>
         </div>
-        <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Payment received</p>
+        <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Booking confirmed</p>
         <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-brand-charcoal sm:text-4xl">
-          Thank you for booking!
+          Thank you for your booking!
         </h1>
         <p class="mx-auto mt-5 max-w-lg text-base leading-relaxed text-gray-600 sm:text-lg">
-          Your payment went through and your booking details were sent to Ryan.
-          He will text you within 24 hours from
+          Your payment went through and we’ve received your booking details.
+          <strong class="font-semibold text-brand-charcoal">Ryan will text you within 24 hours from
           <a href="tel:+13039068597" class="font-semibold text-brand-green hover:underline">303.906.8597</a>
-          to confirm your exact time window.
+          to confirm the exact time window.</strong>
         </p>
+
         <!-- Primary contact callout -->
         <div class="mx-auto mt-8 max-w-md rounded-2xl border-2 border-brand-green/30 bg-white px-5 py-5 shadow-card">
           <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Questions? Reach out anytime</p>
@@ -158,6 +167,7 @@
   </footer>
 
   <script>
+    // Footer year
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
   </script>
