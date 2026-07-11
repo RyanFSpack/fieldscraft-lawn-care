@@ -27,10 +27,11 @@ const PRICE_IDS = {
   flowerWatering: 'price_1Ts5ZKIwpXk8ife07lehq9P1', // Flower Watering
   dogPoopPickup: 'price_1Ts5aEIwpXk8ife0LY5RgXd9', // Dog Poop Pickup
 
-  // Tip for Bromley — Stripe Price with custom_unit_amount (customer types any tip).
-  // NOTE: Custom-amount prices cannot be optional_items; they must be line_items.
-  // Customer can enter $0 (or the minimum you set in Stripe) if they prefer not to tip.
-  tip: 'price_1Ts5l8IwpXk8ife01FypoJSX',
+  // Tip Price ID (custom_unit_amount) — kept for reference only.
+  // Stripe does NOT allow combining a custom-amount Price with other line_items,
+  // and custom-amount Prices cannot be optional_items either. So we implement tips
+  // with dynamic price_data (see tipCents below) instead of this Price ID.
+  // tip: 'price_1Ts5l8IwpXk8ife01FypoJSX',
 };
 
 // Human-readable labels for metadata / receipts
@@ -133,6 +134,14 @@ module.exports = async function handler(req, res) {
   const notes = String(body.notes || '').trim();
   const serviceType = String(body.serviceType || 'basic').trim().toLowerCase();
 
+  // Optional tip from the booking form (dollars). Stripe custom-amount Prices cannot
+  // share a session with other line_items, so we send tip as dynamic price_data.
+  let tipDollars = Number(body.tipAmount);
+  if (!Number.isFinite(tipDollars) || tipDollars < 0) tipDollars = 0;
+  // Cap tips at $500 to avoid typos; convert to cents for Stripe
+  if (tipDollars > 500) tipDollars = 500;
+  const tipCents = Math.round(tipDollars * 100);
+
   // Basic validation (frontend also validates; this is the safety net)
   if (!name || !phone || !email || !address || !preferredDate || !timeWindow || !clippingsPreference) {
     return sendJson(res, 400, {
@@ -162,36 +171,49 @@ module.exports = async function handler(req, res) {
     notes: notes.slice(0, 500),
     serviceType: serviceType,
     serviceLabel: serviceLabel,
+    tipAmount: tipDollars > 0 ? `$${tipDollars.toFixed(2)}` : 'none',
   };
 
   try {
     /**
      * Create Checkout Session
      * - mode: 'payment' → one-time charge (not subscription)
-     * - line_items:
-     *     1) Main service (Basic Mow or Full Yard Service)
-     *     2) Tip for Bromley (custom-amount Price — customer enters any tip amount)
+     * - line_items: main service (+ optional Tip for Bromley via price_data)
      * - optional_items: Flower Watering + Dog Poop Pickup (toggle on Checkout)
      * - metadata: full booking details for Ryan (visible in Stripe Dashboard)
      * - customer_email: pre-fills email on Checkout
      *
-     * Stripe rule: Prices with custom amounts cannot be optional_items.
-     * That is why Tip is a line_item (customer sets the amount, including $0 if allowed).
+     * Why tip uses price_data (not Price ID price_1Ts5l8…):
+     * Stripe only allows ONE line_item when that item is a custom_unit_amount Price,
+     * and custom-amount Prices also cannot be optional_items. Dynamic price_data
+     * lets us charge any tip amount alongside the main service.
      */
+    const lineItems = [
+      {
+        price: mainPriceId,
+        quantity: 1,
+      },
+    ];
+
+    // Add tip only when customer chose an amount > $0 on the booking form
+    if (tipCents > 0) {
+      lineItems.push({
+        price_data: {
+          currency: 'usd',
+          unit_amount: tipCents,
+          product_data: {
+            name: 'Tip for Bromley',
+            description: 'Optional tip — thank you for supporting FieldsCraft!',
+          },
+        },
+        quantity: 1,
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: email,
-      line_items: [
-        {
-          price: mainPriceId,
-          quantity: 1,
-        },
-        // Custom-amount tip — customer types the tip they want on Checkout
-        {
-          price: PRICE_IDS.tip,
-          quantity: 1,
-        },
-      ],
+      line_items: lineItems,
       // Fixed-price optional add-ons (customer can add these on Checkout)
       optional_items: [
         {
@@ -212,7 +234,7 @@ module.exports = async function handler(req, res) {
       custom_text: {
         submit: {
           message:
-            'Tip for Bromley is optional (enter $0 to skip if allowed). After payment, Ryan will text you within 24 hours from 303.906.8597 to confirm your exact time window.',
+            'You can add Flower Watering or Dog Poop Pickup below. After payment, Ryan will text you within 24 hours from 303.906.8597 to confirm your exact time window.',
         },
       },
     });

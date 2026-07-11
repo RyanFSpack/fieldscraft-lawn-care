@@ -385,6 +385,68 @@
                 class="w-full resize-y rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
               ></textarea>
             </div>
+
+            <!--
+              Tip for Bromley (optional).
+              Chosen here (not only on Stripe) because Stripe custom-amount Prices
+              cannot share a Checkout Session with the main service line item.
+              Amount is sent as tipAmount and charged via price_data on the server.
+            -->
+            <fieldset>
+              <legend class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
+                Tip for Bromley <span class="font-normal text-gray-500">(optional)</span>
+              </legend>
+              <p class="mb-3 text-xs leading-relaxed text-gray-500">
+                A little extra goes a long way. You can also add Flower Watering or Dog Poop Pickup on the next screen.
+              </p>
+              <div class="grid grid-cols-2 gap-3 sm:grid-cols-5">
+                <div class="clip-option">
+                  <input type="radio" id="tip-0" name="tip_preset" value="0" class="sr-only" checked>
+                  <label for="tip-0" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center transition hover:border-brand-green/50">
+                    <span class="text-sm font-bold text-brand-charcoal">No tip</span>
+                  </label>
+                </div>
+                <div class="clip-option">
+                  <input type="radio" id="tip-5" name="tip_preset" value="5" class="sr-only">
+                  <label for="tip-5" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center transition hover:border-brand-green/50">
+                    <span class="text-sm font-bold text-brand-charcoal">$5</span>
+                  </label>
+                </div>
+                <div class="clip-option">
+                  <input type="radio" id="tip-10" name="tip_preset" value="10" class="sr-only">
+                  <label for="tip-10" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center transition hover:border-brand-green/50">
+                    <span class="text-sm font-bold text-brand-charcoal">$10</span>
+                  </label>
+                </div>
+                <div class="clip-option">
+                  <input type="radio" id="tip-20" name="tip_preset" value="20" class="sr-only">
+                  <label for="tip-20" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center transition hover:border-brand-green/50">
+                    <span class="text-sm font-bold text-brand-charcoal">$20</span>
+                  </label>
+                </div>
+                <div class="clip-option">
+                  <input type="radio" id="tip-custom" name="tip_preset" value="custom" class="sr-only">
+                  <label for="tip-custom" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center transition hover:border-brand-green/50">
+                    <span class="text-sm font-bold text-brand-charcoal">Other</span>
+                  </label>
+                </div>
+              </div>
+              <div id="tip-custom-wrap" class="mt-3 hidden">
+                <label for="tip-custom-amount" class="mb-1.5 block text-xs font-semibold text-gray-600">
+                  Custom tip amount (USD)
+                </label>
+                <input
+                  type="number"
+                  id="tip-custom-amount"
+                  name="tip_custom_amount"
+                  min="0"
+                  max="500"
+                  step="0.01"
+                  placeholder="e.g. 7.50"
+                  class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
+                >
+              </div>
+            </fieldset>
           </div>
 
           <!-- ========== SUBMIT → CREATE STRIPE CHECKOUT SESSION ========== -->
@@ -403,8 +465,8 @@
 
             <p class="mt-3 text-center text-sm leading-relaxed text-gray-600">
               You will be taken to secure Stripe Checkout. There you can add optional extras
-              (Flower Watering, Dog Poop Pickup) or a tip for Bromley. After payment, Ryan will
-              text you within 24 hours from 303.906.8597 to confirm your exact time window.
+              (Flower Watering, Dog Poop Pickup). After payment, Ryan will text you within 24 hours
+              from 303.906.8597 to confirm your exact time window.
             </p>
           </div>
         </form>
@@ -578,6 +640,35 @@
       });
     });
 
+    // Tip presets: show custom amount field when "Other" is selected
+    const tipCustomWrap = document.getElementById('tip-custom-wrap');
+    const tipCustomInput = document.getElementById('tip-custom-amount');
+    document.querySelectorAll('input[name="tip_preset"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        if (!tipCustomWrap || !tipCustomInput) return;
+        if (radio.value === 'custom' && radio.checked) {
+          tipCustomWrap.classList.remove('hidden');
+          tipCustomInput.focus();
+        } else if (radio.checked) {
+          tipCustomWrap.classList.add('hidden');
+          tipCustomInput.value = '';
+        }
+      });
+    });
+
+    /** Resolve tip dollars from preset radios or custom input */
+    function getTipAmount() {
+      const bookingForm = document.getElementById('booking-form');
+      const preset = bookingForm && bookingForm.querySelector('input[name="tip_preset"]:checked');
+      if (!preset) return 0;
+      if (preset.value === 'custom') {
+        const raw = tipCustomInput ? parseFloat(tipCustomInput.value) : 0;
+        return Number.isFinite(raw) && raw > 0 ? raw : 0;
+      }
+      const n = parseFloat(preset.value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
     // ---- Form UI helpers ----
     const form = document.getElementById('booking-form');
     const formError = document.getElementById('form-error');
@@ -640,6 +731,8 @@
         clippingsPreference: clippingsPreference,
         notes: (document.getElementById('notes') || {}).value || '',
         serviceType: currentService.key,
+        // Optional tip (dollars) — charged via price_data on the server
+        tipAmount: getTipAmount(),
       };
     }
 
