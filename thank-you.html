@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Thank you for booking FieldsCraft Lawn Care. Ryan will text you to confirm your time window.">
+  <meta name="description" content="Thank you for booking FieldsCraft Lawn Care. Ryan will text you within 24 hours to confirm your time window.">
+  <meta name="robots" content="noindex">
   <title>Thank You | FieldsCraft Lawn Care</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -40,7 +41,7 @@
 </head>
 <body class="bg-white antialiased">
 
-  <!-- Header (matches main site) -->
+  <!-- ========== HEADER (matches book.html / index) ========== -->
   <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
     <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
       <a href="index.html" class="group flex items-center gap-2.5">
@@ -63,39 +64,82 @@
     </div>
   </header>
 
-  <main class="bg-gradient-to-b from-brand-green-light/40 to-white">
-    <div class="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center px-4 py-16 text-center sm:px-6 sm:py-24">
-      <div class="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-brand-green text-white shadow-soft" aria-hidden="true">
-        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-        </svg>
+  <main>
+    <section class="border-b border-gray-100 bg-gradient-to-b from-brand-green-light/40 to-white">
+      <div class="mx-auto max-w-2xl px-4 py-14 text-center sm:px-6 sm:py-20 lg:px-8">
+        <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-brand-green text-white shadow-soft" aria-hidden="true">
+          <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+        <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Payment received</p>
+        <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-brand-charcoal sm:text-4xl">
+          Thank you for booking!
+        </h1>
+        <p class="mx-auto mt-5 max-w-lg text-base leading-relaxed text-gray-600 sm:text-lg">
+          Your payment went through and your booking details were sent to Ryan.
+          He will text you within 24 hours from
+          <a href="tel:+13039068597" class="font-semibold text-brand-green hover:underline">303.906.8597</a>
+          to confirm your exact time window.
+        </p>
       </div>
-      <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Payment received</p>
-      <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-brand-charcoal sm:text-4xl">
-        Thank you!
-      </h1>
-      <p class="mt-5 max-w-lg text-base leading-relaxed text-gray-600 sm:text-lg">
-        Your booking is confirmed pending time confirmation. Ryan will text you within 24 hours from
-        <a href="tel:+13039068597" class="font-semibold text-brand-green hover:underline">303.906.8597</a>
-        to finalize the exact time window.
-      </p>
-      <div class="mt-8 rounded-2xl border border-brand-gold/30 bg-brand-gold-soft/60 px-5 py-4 text-sm font-medium text-brand-charcoal">
-        Questions? Text Ryan at
-        <a href="tel:+13039068597" class="font-bold text-brand-green hover:underline">303.906.8597</a>
+    </section>
+
+    <div class="mx-auto max-w-2xl px-4 py-10 sm:px-6 sm:py-12 lg:px-8">
+      <!-- What happens next -->
+      <section class="rounded-2xl border border-gray-100 bg-gray-50/80 p-6 shadow-card sm:p-8">
+        <h2 class="text-lg font-bold text-brand-charcoal sm:text-xl">What happens next</h2>
+        <ol class="mt-5 space-y-4">
+          <li class="flex gap-3">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">1</span>
+            <p class="pt-1 text-sm leading-relaxed text-gray-600 sm:text-base">
+              <span class="font-semibold text-brand-charcoal">You’re all set on payment</span> — your booking is secured.
+            </p>
+          </li>
+          <li class="flex gap-3">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">2</span>
+            <p class="pt-1 text-sm leading-relaxed text-gray-600 sm:text-base">
+              Ryan will text you within 24 hours from
+              <a href="tel:+13039068597" class="font-semibold text-brand-green hover:underline">303.906.8597</a>
+              to confirm your exact time window
+            </p>
+          </li>
+          <li class="flex gap-3">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-green text-sm font-bold text-white">3</span>
+            <p class="pt-1 text-sm leading-relaxed text-gray-600 sm:text-base">
+              Bromley arrives and delivers great results
+            </p>
+          </li>
+        </ol>
+        <p class="mt-6 rounded-xl border border-brand-gold/30 bg-brand-gold-soft/60 px-4 py-3 text-sm font-medium text-brand-charcoal">
+          Questions or need to change something? Text Ryan at
+          <a href="tel:+13039068597" class="font-bold text-brand-green hover:underline">303.906.8597</a>
+        </p>
+      </section>
+
+      <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <a
+          href="index.html"
+          class="inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-6 py-3.5 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-green-dark sm:w-auto"
+        >
+          Back to Home
+        </a>
+        <a
+          href="tel:+13039068597"
+          class="inline-flex w-full items-center justify-center rounded-xl border-2 border-gray-200 bg-white px-6 py-3.5 text-sm font-semibold text-brand-charcoal transition hover:border-brand-green hover:text-brand-green sm:w-auto"
+        >
+          Text Ryan
+        </a>
       </div>
-      <a
-        href="index.html"
-        class="mt-10 inline-flex items-center justify-center rounded-xl bg-brand-green px-6 py-3.5 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-green-dark"
-      >
-        Back to Home
-      </a>
     </div>
   </main>
 
-  <footer class="border-t border-gray-100 bg-white py-8">
-    <p class="text-center text-xs text-gray-400">
-      &copy; <span id="year"></span> FieldsCraft Lawn Care. All rights reserved. · Fort Collins, Colorado
-    </p>
+  <footer class="border-t border-gray-100 bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <p class="text-center text-xs text-gray-400">
+        &copy; <span id="year"></span> FieldsCraft Lawn Care. All rights reserved. · Fort Collins, Colorado
+      </p>
+    </div>
   </footer>
 
   <script>

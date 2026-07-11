@@ -200,8 +200,18 @@
           <p class="mt-1 text-sm text-gray-500">So we can schedule accurately and reach you quickly.</p>
         </div>
 
-        <form id="booking-form" class="space-y-6" novalidate>
+        <form
+          id="booking-form"
+          class="space-y-6"
+          action="https://formspree.io/f/mdarqrky"
+          method="POST"
+          novalidate
+        >
+          <!-- Formspree helpers -->
+          <input type="hidden" name="_subject" id="form-subject" value="New FieldsCraft Booking">
+          <input type="hidden" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
           <input type="hidden" id="service-type" name="service" value="basic">
+          <input type="hidden" id="service-title-field" name="service_title" value="Basic Mow – $18">
 
           <!-- Full Name -->
           <div>
@@ -211,7 +221,7 @@
             <input
               type="text"
               id="full-name"
-              name="fullName"
+              name="full_name"
               required
               autocomplete="name"
               placeholder="Jane Neighbor"
@@ -227,7 +237,7 @@
             <input
               type="text"
               id="address"
-              name="address"
+              name="service_address"
               required
               autocomplete="street-address"
               placeholder="123 Maple St, Kechter Farm, Fort Collins, CO"
@@ -275,7 +285,7 @@
             <input
               type="date"
               id="preferred-date"
-              name="preferredDate"
+              name="preferred_date"
               required
               class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
             >
@@ -288,21 +298,21 @@
             </legend>
             <div class="grid gap-3 sm:grid-cols-3">
               <div class="time-option">
-                <input type="radio" id="time-morning" name="timeWindow" value="morning" class="sr-only" required>
+                <input type="radio" id="time-morning" name="time_window" value="Morning (8am–12pm)" class="sr-only" required>
                 <label for="time-morning" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-4 py-4 text-center transition hover:border-brand-green/50">
                   <span class="text-sm font-bold text-brand-charcoal">Morning</span>
                   <span class="mt-0.5 text-xs text-gray-500">8am – 12pm</span>
                 </label>
               </div>
               <div class="time-option">
-                <input type="radio" id="time-afternoon" name="timeWindow" value="afternoon" class="sr-only">
+                <input type="radio" id="time-afternoon" name="time_window" value="Afternoon (12pm–5pm)" class="sr-only">
                 <label for="time-afternoon" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-4 py-4 text-center transition hover:border-brand-green/50">
                   <span class="text-sm font-bold text-brand-charcoal">Afternoon</span>
                   <span class="mt-0.5 text-xs text-gray-500">12pm – 5pm</span>
                 </label>
               </div>
               <div class="time-option">
-                <input type="radio" id="time-either" name="timeWindow" value="either" class="sr-only" checked>
+                <input type="radio" id="time-either" name="time_window" value="Either (flexible)" class="sr-only" checked>
                 <label for="time-either" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-4 py-4 text-center transition hover:border-brand-green/50">
                   <span class="text-sm font-bold text-brand-charcoal">Either</span>
                   <span class="mt-0.5 text-xs text-gray-500">Flexible</span>
@@ -322,21 +332,21 @@
               </p>
               <div class="space-y-3">
                 <div class="clip-option">
-                  <input type="radio" id="clip-mulched" name="clippings" value="mulched" class="sr-only" required>
+                  <input type="radio" id="clip-mulched" name="lawn_clippings" value="Mulched on the lawn" class="sr-only" required>
                   <label for="clip-mulched" class="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition hover:border-brand-green/50">
                     <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-gray-300" aria-hidden="true"></span>
                     <span class="text-sm font-medium text-brand-charcoal">Mulched on the lawn</span>
                   </label>
                 </div>
                 <div class="clip-option">
-                  <input type="radio" id="clip-bagged" name="clippings" value="bagged" class="sr-only">
+                  <input type="radio" id="clip-bagged" name="lawn_clippings" value="Bagged and placed in the refuse bin (please leave the bin out)" class="sr-only">
                   <label for="clip-bagged" class="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition hover:border-brand-green/50">
                     <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-gray-300" aria-hidden="true"></span>
                     <span class="text-sm font-medium text-brand-charcoal">Bagged and placed in the refuse bin (please leave the bin out)</span>
                   </label>
                 </div>
                 <div class="clip-option">
-                  <input type="radio" id="clip-other" name="clippings" value="other" class="sr-only">
+                  <input type="radio" id="clip-other" name="lawn_clippings" value="Other (please describe below)" class="sr-only">
                   <label for="clip-other" class="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition hover:border-brand-green/50">
                     <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-gray-300" aria-hidden="true"></span>
                     <span class="text-sm font-medium text-brand-charcoal">Other (please describe below)</span>
@@ -350,7 +360,7 @@
                 <input
                   type="text"
                   id="clippings-other"
-                  name="clippingsOther"
+                  name="lawn_clippings_other"
                   placeholder="e.g. Leave bags by the side gate"
                   class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
                 >
@@ -377,29 +387,32 @@
           <!-- ========== PAY TO CONFIRM BOOKING (Stripe Payment Links) ========== -->
           <div class="pt-2">
             <p id="form-error" class="mb-3 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
+            <p id="form-success" class="mb-3 hidden rounded-xl border border-brand-green/30 bg-brand-green-light px-4 py-3 text-sm text-brand-charcoal" role="status"></p>
 
-            <!-- Stripe Payment Link — Basic Mow ($18): shown when ?service=basic -->
+            <!-- Stripe Payment Link — Basic Mow ($18): shown when ?service=basic
+                 Live link: https://buy.stripe.com/eVqcN6dRCbs47UJd4G5kk01 -->
             <button
               type="submit"
               id="pay-btn-basic"
               data-service="basic"
-              class="pay-btn inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 sm:text-lg"
+              class="pay-btn inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:text-lg"
             >
               Pay to Confirm Booking – $18
             </button>
 
-            <!-- Stripe Payment Link — Full Yard Service ($25): shown when ?service=full -->
+            <!-- Stripe Payment Link — Full Yard Service ($25): shown when ?service=full
+                 Live link: https://buy.stripe.com/00w3cweVGbs45MB8Oq5kk00 -->
             <button
               type="submit"
               id="pay-btn-full"
               data-service="full"
-              class="pay-btn hidden inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 sm:text-lg"
+              class="pay-btn hidden inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:text-lg"
             >
               Pay to Confirm Booking – $25
             </button>
 
             <p class="mt-3 text-center text-sm leading-relaxed text-gray-600">
-              You will be taken to a secure Stripe checkout. After payment, Ryan will text you within 24 hours to confirm your exact time window.
+              You will be taken to a secure Stripe checkout. After payment, Ryan will text you within 24 hours from 303.906.8597 to confirm your exact time window.
             </p>
           </div>
         </form>
@@ -464,8 +477,18 @@
 
   <script>
     /*
-     * ========== STRIPE SHAREABLE PAYMENT LINKS ==========
-     * No backend required. Success URL should point to thank-you.html in Stripe Dashboard.
+     * ========== FORMSPREE ==========
+     * Live endpoint — emails Ryan with full booking details on submit.
+     */
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdarqrky';
+
+    /*
+     * ========== STRIPE LIVE PAYMENT LINKS ==========
+     * After payment, Stripe should redirect to thank-you.html.
+     * Set this once per Payment Link in Stripe Dashboard:
+     *   Payment Links → [link] → After payment → Don't show confirmation page
+     *   → Redirect to: https://fieldscraft.com/thank-you.html
+     *   (or your Vercel URL + /thank-you.html while testing)
      */
     // Stripe Payment Link — Basic Mow ($18)
     const STRIPE_PAYMENT_LINK_BASIC = 'https://buy.stripe.com/eVqcN6dRCbs47UJd4G5kk01';
@@ -512,10 +535,17 @@
       const descEl = document.getElementById('service-description');
       const priceEl = document.getElementById('service-price-badge');
       const typeEl = document.getElementById('service-type');
+      const serviceTitleField = document.getElementById('service-title-field');
+      const subjectField = document.getElementById('form-subject');
+
       if (titleEl) titleEl.textContent = service.title;
       if (descEl) descEl.textContent = service.description;
       if (priceEl) priceEl.textContent = service.price;
       if (typeEl) typeEl.value = service.key;
+      if (serviceTitleField) serviceTitleField.value = service.title;
+      if (subjectField) {
+        subjectField.value = 'New FieldsCraft Booking: ' + service.title;
+      }
       document.title = 'Book ' + service.title + ' | FieldsCraft Lawn Care';
 
       // Highlight active service pick
@@ -562,10 +592,10 @@
     // Show optional "Other" text field for clippings preference
     const clipOtherWrap = document.getElementById('clippings-other-wrap');
     const clipOtherInput = document.getElementById('clippings-other');
-    document.querySelectorAll('input[name="clippings"]').forEach(function (radio) {
+    document.querySelectorAll('input[name="lawn_clippings"]').forEach(function (radio) {
       radio.addEventListener('change', function () {
         if (!clipOtherWrap || !clipOtherInput) return;
-        if (radio.value === 'other' && radio.checked) {
+        if (radio.value.indexOf('Other') === 0 && radio.checked) {
           clipOtherWrap.classList.remove('hidden');
           clipOtherInput.required = true;
         } else if (radio.checked) {
@@ -576,11 +606,14 @@
       });
     });
 
-    // Form submit → validate → open Stripe Payment Link for selected service
+    // Form submit → validate → Formspree email → Stripe Payment Link
     const form = document.getElementById('booking-form');
     const formError = document.getElementById('form-error');
+    const formSuccess = document.getElementById('form-success');
+    const payButtons = document.querySelectorAll('.pay-btn');
 
     function showError(msg) {
+      if (formSuccess) formSuccess.classList.add('hidden');
       if (!formError) return;
       formError.textContent = msg;
       formError.classList.remove('hidden');
@@ -593,8 +626,30 @@
       formError.classList.add('hidden');
     }
 
+    function showSuccess(msg) {
+      if (formError) formError.classList.add('hidden');
+      if (!formSuccess) return;
+      formSuccess.textContent = msg;
+      formSuccess.classList.remove('hidden');
+    }
+
+    function setPayButtonsLoading(isLoading) {
+      payButtons.forEach(function (btn) {
+        btn.disabled = isLoading;
+        if (isLoading) {
+          btn.dataset.originalText = btn.textContent.trim();
+          btn.textContent = 'Sending booking details…';
+        } else if (btn.dataset.originalText) {
+          btn.textContent = btn.dataset.originalText;
+        }
+      });
+    }
+
     if (form) {
-      form.addEventListener('submit', function (e) {
+      // Keep form action in sync with FORMSPREE_ENDPOINT
+      form.setAttribute('action', FORMSPREE_ENDPOINT);
+
+      form.addEventListener('submit', async function (e) {
         e.preventDefault();
         hideError();
 
@@ -604,15 +659,64 @@
           return;
         }
 
-        const clipChoice = form.querySelector('input[name="clippings"]:checked');
-        if (clipChoice && clipChoice.value === 'other' && clipOtherInput && !clipOtherInput.value.trim()) {
+        const clipChoice = form.querySelector('input[name="lawn_clippings"]:checked');
+        if (
+          clipChoice &&
+          clipChoice.value.indexOf('Other') === 0 &&
+          clipOtherInput &&
+          !clipOtherInput.value.trim()
+        ) {
           showError('Please describe your lawn clippings preference.');
           clipOtherInput.focus();
           return;
         }
 
-        // Redirect to Stripe Shareable Payment Link (no backend required)
-        window.location.href = currentService.paymentLink;
+        // Guard: Formspree endpoint must be configured before go-live
+        if (!FORMSPREE_ENDPOINT || FORMSPREE_ENDPOINT.indexOf('YOUR_FORM_ID') !== -1) {
+          showError(
+            'Formspree is not configured yet. Add your Formspree form ID, then try again. (You can still test Stripe separately.)'
+          );
+          return;
+        }
+
+        try {
+          setPayButtonsLoading(true);
+
+          // Ensure service fields are current before send
+          const typeEl = document.getElementById('service-type');
+          const serviceTitleField = document.querySelector('input[name="service_title"]');
+          const subjectField = document.getElementById('form-subject');
+          if (typeEl) typeEl.value = currentService.key;
+          if (serviceTitleField) serviceTitleField.value = currentService.title;
+          if (subjectField) {
+            subjectField.value = 'New FieldsCraft Booking: ' + currentService.title;
+          }
+
+          const formData = new FormData(form);
+
+          // POST booking details to Formspree (emails Ryan)
+          const response = await fetch(FORMSPREE_ENDPOINT, {
+            method: 'POST',
+            body: formData,
+            headers: { Accept: 'application/json' },
+          });
+
+          if (!response.ok) {
+            throw new Error('Could not send booking details. Please try again or text Ryan at 303.906.8597.');
+          }
+
+          showSuccess('Booking details sent! Redirecting you to secure Stripe checkout…');
+
+          // After Formspree success → Pay First: open live Stripe Payment Link
+          window.location.href = currentService.paymentLink;
+        } catch (err) {
+          console.error(err);
+          setPayButtonsLoading(false);
+          showError(
+            (err && err.message) ||
+              'Something went wrong. Please try again or text Ryan at 303.906.8597.'
+          );
+        }
       });
     }
 
