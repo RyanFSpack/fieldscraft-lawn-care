@@ -378,14 +378,7 @@
           <div class="pt-2">
             <p id="form-error" class="mb-3 hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
 
-            <!--
-              TODO: STRIPE PAYMENT LINK — Basic Mow ($18)
-              1. Create a Payment Link in Stripe Dashboard for $18 (Basic Mow).
-              2. Set the success redirect URL to thank-you.html
-                 (e.g. https://fieldscraft.com/thank-you.html).
-              3. Paste the shareable link into STRIPE_PAYMENT_LINK_BASIC in the script below.
-              Example: https://buy.stripe.com/test_XXXX
-            -->
+            <!-- Stripe Payment Link — Basic Mow ($18): shown when ?service=basic -->
             <button
               type="submit"
               id="pay-btn-basic"
@@ -395,14 +388,7 @@
               Pay to Confirm Booking – $18
             </button>
 
-            <!--
-              TODO: STRIPE PAYMENT LINK — Full Yard Service ($25)
-              1. Create a Payment Link in Stripe Dashboard for $25 (Full Yard Service).
-              2. Set the success redirect URL to thank-you.html
-                 (e.g. https://fieldscraft.com/thank-you.html).
-              3. Paste the shareable link into STRIPE_PAYMENT_LINK_FULL in the script below.
-              Example: https://buy.stripe.com/test_YYYY
-            -->
+            <!-- Stripe Payment Link — Full Yard Service ($25): shown when ?service=full -->
             <button
               type="submit"
               id="pay-btn-full"
@@ -413,7 +399,7 @@
             </button>
 
             <p class="mt-3 text-center text-sm leading-relaxed text-gray-600">
-              You will be taken to a secure Stripe checkout. After payment, Ryan will text you to confirm your exact time window.
+              You will be taken to a secure Stripe checkout. After payment, Ryan will text you within 24 hours to confirm your exact time window.
             </p>
           </div>
         </form>
@@ -479,13 +465,12 @@
   <script>
     /*
      * ========== STRIPE SHAREABLE PAYMENT LINKS ==========
-     * No backend required. Paste your real Payment Link URLs below.
-     * In Stripe Dashboard → Payment Links, set success URL to thank-you.html.
+     * No backend required. Success URL should point to thank-you.html in Stripe Dashboard.
      */
-    // TODO: STRIPE PAYMENT LINK — Basic Mow ($18) → paste shareable URL here
-    const STRIPE_PAYMENT_LINK_BASIC = 'https://buy.stripe.com/TODO_BASIC_MOW_18';
-    // TODO: STRIPE PAYMENT LINK — Full Yard Service ($25) → paste shareable URL here
-    const STRIPE_PAYMENT_LINK_FULL = 'https://buy.stripe.com/TODO_FULL_YARD_25';
+    // Stripe Payment Link — Basic Mow ($18)
+    const STRIPE_PAYMENT_LINK_BASIC = 'https://buy.stripe.com/test_14A9AU8C21tN4njgIEdZ600';
+    // Stripe Payment Link — Full Yard Service ($25)
+    const STRIPE_PAYMENT_LINK_FULL = 'https://buy.stripe.com/test_aFaeVe8C22xR8DzakgdZ601';
 
     const SERVICES = {
       basic: {
