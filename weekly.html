@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    Post one-time-mow thank-you + weekly upsell page.
+    Customers land here after a completed one-time service.
+    Flow: Formspree emails Ryan the weekly signup details.
+    Stripe subscription checkout can be wired later — see comments near the CTAs.
+  -->
+  <meta name="description" content="Thank you for choosing FieldsCraft. Switch to a simple weekly mow with Bromley — cancel anytime.">
+  <meta name="robots" content="noindex">
+  <title>Weekly Mow | FieldsCraft Lawn Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#22c55e',
+              'green-dark': '#16a34a',
+              'green-light': '#dcfce7',
+              charcoal: '#1f2937',
+              gold: '#eab308',
+              'gold-soft': '#fef9c3',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 10px 40px -12px rgba(31, 41, 55, 0.12)',
+            card: '0 4px 24px -4px rgba(31, 41, 55, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; color: #1f2937; }
+    /* Custom radio cards (matches book.html patterns) */
+    .day-option input:checked + label,
+    .clip-option input:checked + label,
+    .tip-option input:checked + label,
+    .plan-option input:checked + label {
+      border-color: #22c55e;
+      background-color: #dcfce7;
+      box-shadow: 0 0 0 1px #22c55e;
+    }
+  </style>
+</head>
+<body class="bg-white antialiased">
+
+  <!-- ========== HEADER (matches book.html / thank-you.html / index) ========== -->
+  <header class="sticky top-0 z-50 border-b border-gray-100 bg-white/95 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+      <a href="index.html" class="group flex items-center gap-2.5">
+        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-green text-white shadow-sm" aria-hidden="true">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 20c1.5-4 2-8 1-14 3 3 4 7 4 11" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 20c.8-3.5 1.2-7 .5-12 2.5 2.5 3.5 6 3.5 10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17 20c.6-2.5 1-5.5.5-9 2 2 2.5 4.5 2.5 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 20h16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="text-lg font-bold tracking-tight text-brand-charcoal sm:text-xl">FieldsCraft</span>
+      </a>
+      <nav class="hidden items-center gap-8 text-sm font-medium text-gray-600 md:flex" aria-label="Primary">
+        <a href="index.html" class="transition hover:text-brand-green">Home</a>
+        <a href="index.html#services" class="transition hover:text-brand-green">Services</a>
+        <a href="index.html#about" class="transition hover:text-brand-green">About</a>
+        <a href="index.html#faq" class="transition hover:text-brand-green">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========== HERO: Thank-you headline ========== -->
+    <section class="border-b border-gray-100 bg-gradient-to-b from-brand-green-light/40 to-white">
+      <div class="mx-auto max-w-3xl px-4 py-12 text-center sm:px-6 sm:py-16 lg:px-8">
+        <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Thank you</p>
+        <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-brand-charcoal sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
+          Thanks for trusting us with your lawn!
+        </h1>
+        <p class="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-600 sm:text-lg">
+          We hope you’re happy with how it looks. If you’d like to keep it that way every week —
+          without having to rebook — we’ve got a simple option for you.
+        </p>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+
+      <!--
+        ========== BROMLEY PHOTO ==========
+        DEVELOPER NOTE: Place the image file "bromley-thanks.jpg" in the SAME FOLDER
+        as this weekly.html file (project root). Path used below: bromley-thanks.jpg
+        Do not move it to /images/ unless you also update the src attribute.
+      -->
+      <figure class="overflow-hidden rounded-2xl shadow-soft ring-1 ring-black/5">
+        <img
+          src="bromley-thanks.jpg"
+          alt="Bromley smiling after a job well done — thank you from FieldsCraft Lawn Care"
+          width="1600"
+          height="1200"
+          class="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10]"
+          fetchpriority="high"
+        >
+      </figure>
+      <p class="mt-3 text-center text-sm text-gray-500">Bromley — your neighbor at FieldsCraft</p>
+
+      <!-- ========== PERSONAL MESSAGE ========== -->
+      <section class="mt-10 rounded-2xl border border-gray-100 bg-gray-50/80 p-6 shadow-card sm:p-8">
+        <h2 class="text-lg font-bold text-brand-charcoal sm:text-xl">A quick note from the FieldsCraft family</h2>
+        <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+          Hi there — we’re so glad Bromley could take care of your yard. He works hard to leave
+          every lawn neat and looking its best, and it means a lot that you chose FieldsCraft.
+        </p>
+        <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
+          If you’d like Bromley to come back on a regular weekly schedule, you can set that up
+          below. No long-term contract — just reliable care, week after week. Cancel anytime.
+        </p>
+      </section>
+
+      <!--
+        ========== WEEKLY SIGNUP FORM ==========
+        Submits to Formspree (same endpoint as book.html) so Ryan gets an email.
+        Stripe subscription checkout can be added later (see CTA comments).
+      -->
+      <form id="weekly-form" class="mt-12 space-y-10" novalidate>
+
+        <!-- ========== WEEKLY PLAN OPTIONS ========== -->
+        <section aria-labelledby="weekly-plans-heading">
+          <div class="text-center sm:text-left">
+            <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Weekly service</p>
+            <h2 id="weekly-plans-heading" class="mt-2 text-2xl font-bold tracking-tight text-brand-charcoal sm:text-3xl">
+              Keep your lawn looking great every week
+            </h2>
+            <p class="mt-2 text-sm text-gray-600 sm:text-base">
+              Choose the plan that fits — simple weekly care, no rebooking needed.
+            </p>
+          </div>
+
+          <!-- Strong cancel-anytime messaging -->
+          <div class="mt-5 flex items-start gap-3 rounded-xl border border-brand-green/25 bg-brand-green-light/60 px-4 py-3.5 sm:items-center">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-green text-white" aria-hidden="true">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+              </svg>
+            </span>
+            <p class="text-sm font-semibold leading-snug text-brand-charcoal sm:text-base">
+              Cancel anytime — no contracts, no hassle. Pause or stop whenever you need.
+            </p>
+          </div>
+
+          <div class="mt-6 grid gap-5 sm:grid-cols-2">
+            <!--
+              Basic Weekly Mow – $18/week
+              Stripe Price ID: price_1TuxzEIwpXk8ife0iLcI5L4R
+              TODO: Wire Stripe subscription Checkout / Payment Link for this Price ID
+            -->
+            <article class="plan-option relative flex flex-col rounded-2xl border-2 border-gray-200 bg-white p-6 shadow-card transition hover:border-brand-green/40 sm:p-7">
+              <input type="radio" id="plan-basic" name="weekly_plan" value="basic" class="sr-only" checked>
+              <label for="plan-basic" class="absolute inset-0 cursor-pointer rounded-2xl border-2 border-transparent" aria-label="Select Basic Weekly Mow"></label>
+              <div class="relative z-10 pointer-events-none">
+                <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green-light text-brand-green" aria-hidden="true">
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-1.5 4-3 7-6 10h12c-3-3-4.5-6-6-10zM6 20h12"/>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-brand-charcoal">Basic Weekly Mow</h3>
+                <p class="mt-1 text-sm text-gray-500">Mowing only · every week</p>
+                <p class="mt-5">
+                  <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$18</span>
+                  <span class="text-sm font-medium text-gray-500"> / week</span>
+                </p>
+                <ul class="mt-5 space-y-2.5 text-sm text-gray-600">
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Full lawn mowed evenly</li>
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Clean, professional finish</li>
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Same great rate, every week</li>
+                </ul>
+                <input type="hidden" name="basic_price_id" value="price_1TuxzEIwpXk8ife0iLcI5L4R" disabled>
+              </div>
+            </article>
+
+            <!--
+              Full Service Weekly Mow – $20/week
+              Stripe Price ID: price_1TuxyXIwpXk8ife0gx9HvW6T
+              TODO: Wire Stripe subscription Checkout / Payment Link for this Price ID
+            -->
+            <article class="plan-option relative flex flex-col rounded-2xl border-2 border-brand-green bg-white p-6 shadow-soft sm:p-7">
+              <span class="absolute -top-3 right-5 z-20 rounded-full bg-brand-gold px-3 py-0.5 text-xs font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
+                Best value
+              </span>
+              <input type="radio" id="plan-full" name="weekly_plan" value="full" class="sr-only">
+              <label for="plan-full" class="absolute inset-0 z-10 cursor-pointer rounded-2xl border-2 border-transparent" aria-label="Select Full Service Weekly Mow"></label>
+              <div class="relative z-10 pointer-events-none">
+                <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green text-white" aria-hidden="true">
+                  <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-brand-charcoal">Full Service Weekly Mow</h3>
+                <p class="mt-1 text-sm text-gray-500">Mow + trim + blow · every week</p>
+                <p class="mt-5">
+                  <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$20</span>
+                  <span class="text-sm font-medium text-gray-500"> / week</span>
+                </p>
+                <ul class="mt-5 space-y-2.5 text-sm text-gray-600">
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Everything in Basic Weekly</li>
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Trimming along borders</li>
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Blow off walkways &amp; driveways</li>
+                </ul>
+                <input type="hidden" name="full_price_id" value="price_1TuxyXIwpXk8ife0gx9HvW6T" disabled>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ========== CONTACT + SCHEDULING PREFERENCES ========== -->
+        <section aria-labelledby="prefs-heading" class="rounded-2xl border border-gray-100 bg-white p-6 shadow-card sm:p-8">
+          <h2 id="prefs-heading" class="text-lg font-bold text-brand-charcoal sm:text-xl">
+            Your weekly preferences
+          </h2>
+          <p class="mt-1 text-sm text-gray-500">
+            So we can set Bromley up for a smooth first weekly visit.
+          </p>
+
+          <div class="mt-6 space-y-6">
+            <!-- Contact (required for Formspree + Ryan follow-up) -->
+            <div>
+              <label for="full-name" class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
+                Full Name <span class="text-brand-green">*</span>
+              </label>
+              <input
+                type="text"
+                id="full-name"
+                name="full_name"
+                required
+                autocomplete="name"
+                placeholder="Jane Neighbor"
+                class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
+              >
+            </div>
+
+            <div>
+              <label for="address" class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
+                Service Address <span class="text-brand-green">*</span>
+              </label>
+              <input
+                type="text"
+                id="address"
+                name="service_address"
+                required
+                autocomplete="street-address"
+                placeholder="123 Maple St, Kechter Farm, Fort Collins, CO"
+                class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
+              >
+            </div>
+
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div>
+                <label for="phone" class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
+                  Phone Number <span class="text-brand-green">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  required
+                  autocomplete="tel"
+                  placeholder="(303) 555-0123"
+                  class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
+                >
+              </div>
+              <div>
+                <label for="email" class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
+                  Email Address <span class="text-brand-green">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  required
+                  autocomplete="email"
+                  placeholder="you@example.com"
+                  class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
+                >
+              </div>
+            </div>
+
+            <!-- Preferred day of the week -->
+            <fieldset>
+              <legend class="mb-2.5 block text-sm font-semibold text-brand-charcoal">
+                Preferred day of the week <span class="text-brand-green">*</span>
+              </legend>
+              <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+                <div class="day-option">
+                  <input type="radio" id="day-mon" name="preferred_day" value="Monday" class="sr-only" required>
+                  <label for="day-mon" class="flex cursor-pointer items-center justify-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center text-sm font-semibold text-brand-charcoal transition hover:border-brand-green/50">Mon</label>
+                </div>
+                <div class="day-option">
+                  <input type="radio" id="day-tue" name="preferred_day" value="Tuesday" class="sr-only">
+                  <label for="day-tue" class="flex cursor-pointer items-center justify-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center text-sm font-semibold text-brand-charcoal transition hover:border-brand-green/50">Tue</label>
+                </div>
+                <div class="day-option">
+                  <input type="radio" id="day-wed" name="preferred_day" value="Wednesday" class="sr-only">
+                  <label for="day-wed" class="flex cursor-pointer items-center justify-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center text-sm font-semibold text-brand-charcoal transition hover:border-brand-green/50">Wed</label>
+                </div>
+                <div class="day-option">
+                  <input type="radio" id="day-thu" name="preferred_day" value="Thursday" class="sr-only">
+                  <label for="day-thu" class="flex cursor-pointer items-center justify-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center text-sm font-semibold text-brand-charcoal transition hover:border-brand-green/50">Thu</label>
+                </div>
+                <div class="day-option">
+                  <input type="radio" id="day-fri" name="preferred_day" value="Friday" class="sr-only">
+                  <label for="day-fri" class="flex cursor-pointer items-center justify-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center text-sm font-semibold text-brand-charcoal transition hover:border-brand-green/50">Fri</label>
+                </div>
+                <div class="day-option">
+                  <input type="radio" id="day-sat" name="preferred_day" value="Saturday" class="sr-only">
+                  <label for="day-sat" class="flex cursor-pointer items-center justify-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center text-sm font-semibold text-brand-charcoal transition hover:border-brand-green/50">Sat</label>
+                </div>
+                <div class="day-option">
+                  <input type="radio" id="day-sun" name="preferred_day" value="Sunday" class="sr-only">
+                  <label for="day-sun" class="flex cursor-pointer items-center justify-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center text-sm font-semibold text-brand-charcoal transition hover:border-brand-green/50">Sun</label>
+                </div>
+                <div class="day-option">
+                  <input type="radio" id="day-flex" name="preferred_day" value="Flexible" class="sr-only" checked>
+                  <label for="day-flex" class="flex cursor-pointer items-center justify-center rounded-xl border-2 border-gray-200 bg-white px-3 py-3 text-center text-sm font-semibold text-brand-charcoal transition hover:border-brand-green/50">Flexible</label>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Lawn Clippings Preference -->
+            <fieldset>
+              <legend class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
+                Lawn Clippings Preference <span class="text-brand-green">*</span>
+              </legend>
+              <p class="mb-3 text-xs leading-relaxed text-gray-500">
+                Tell us how you’d like clippings handled so Bromley can do the job right each week.
+              </p>
+              <div class="space-y-3">
+                <div class="clip-option">
+                  <input type="radio" id="clip-mulched" name="lawn_clippings" value="Mulched on the lawn" class="sr-only" required checked>
+                  <label for="clip-mulched" class="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition hover:border-brand-green/50">
+                    <span class="text-sm font-medium text-brand-charcoal">Mulched on the lawn</span>
+                  </label>
+                </div>
+                <div class="clip-option">
+                  <input type="radio" id="clip-bagged" name="lawn_clippings" value="Bagged and placed in the refuse bin" class="sr-only">
+                  <label for="clip-bagged" class="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition hover:border-brand-green/50">
+                    <span class="text-sm font-medium text-brand-charcoal">Bagged and placed in the refuse bin</span>
+                  </label>
+                </div>
+                <div class="clip-option">
+                  <input type="radio" id="clip-other" name="lawn_clippings" value="Other" class="sr-only">
+                  <label for="clip-other" class="flex cursor-pointer items-start gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition hover:border-brand-green/50">
+                    <span class="text-sm font-medium text-brand-charcoal">Other</span>
+                  </label>
+                </div>
+              </div>
+              <div id="clippings-other-wrap" class="mt-3 hidden">
+                <label for="clippings-other" class="mb-1.5 block text-xs font-semibold text-gray-600">
+                  Please describe your clippings preference
+                </label>
+                <input
+                  type="text"
+                  id="clippings-other"
+                  name="lawn_clippings_other"
+                  placeholder="e.g. Leave bags by the side gate"
+                  class="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
+                >
+              </div>
+            </fieldset>
+
+            <!-- Notes -->
+            <div>
+              <label for="notes" class="mb-1.5 block text-sm font-semibold text-brand-charcoal">
+                Notes or special instructions
+              </label>
+              <p class="mb-2 text-xs leading-relaxed text-gray-500">
+                Gate codes, pets, flower beds, access notes — anything that helps Bromley each week.
+              </p>
+              <textarea
+                id="notes"
+                name="notes"
+                rows="4"
+                placeholder="Examples: Gate code is 1234, Please put the dog inside, Watch the flower bed on the left…"
+                class="w-full resize-y rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-brand-charcoal shadow-sm outline-none transition placeholder:text-gray-400 focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
+              ></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== OPTIONAL WEEKLY TIP (last before CTAs) ========== -->
+        <!--
+          Weekly tip Price IDs (for Stripe subscription line items later):
+          - $3/week tip: price_1TuyPCIwpXk8ife0X7ncoRfK
+          - $5/week tip: price_1TuyPaIwpXk8ife07WXDaaJx
+          TODO: Include selected tip Price ID when creating the subscription Checkout Session
+        -->
+        <section aria-labelledby="weekly-tip-heading">
+          <fieldset>
+            <legend id="weekly-tip-heading" class="text-lg font-bold text-brand-charcoal sm:text-xl">
+              Optional weekly tip
+            </legend>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
+              If you feel Bromley has done a great job, you’re welcome to add a small weekly tip.
+              Completely optional.
+            </p>
+            <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div class="tip-option">
+                <input type="radio" id="tip-none" name="weekly_tip" value="0" class="sr-only" checked data-price-id="">
+                <label for="tip-none" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-4 py-4 text-center transition hover:border-brand-green/50">
+                  <span class="text-sm font-bold text-brand-charcoal">No tip</span>
+                  <span class="mt-0.5 text-xs text-gray-500">That’s perfectly fine</span>
+                </label>
+              </div>
+              <div class="tip-option">
+                <!-- Stripe Price ID: price_1TuyPCIwpXk8ife0X7ncoRfK -->
+                <input type="radio" id="tip-3" name="weekly_tip" value="3" class="sr-only" data-price-id="price_1TuyPCIwpXk8ife0X7ncoRfK">
+                <label for="tip-3" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-4 py-4 text-center transition hover:border-brand-green/50">
+                  <span class="text-sm font-bold text-brand-charcoal">$3 / week</span>
+                  <span class="mt-0.5 text-xs text-gray-500">A little thanks</span>
+                </label>
+              </div>
+              <div class="tip-option">
+                <!-- Stripe Price ID: price_1TuyPaIwpXk8ife07WXDaaJx -->
+                <input type="radio" id="tip-5" name="weekly_tip" value="5" class="sr-only" data-price-id="price_1TuyPaIwpXk8ife07WXDaaJx">
+                <label for="tip-5" class="flex cursor-pointer flex-col items-center rounded-xl border-2 border-gray-200 bg-white px-4 py-4 text-center transition hover:border-brand-green/50">
+                  <span class="text-sm font-bold text-brand-charcoal">$5 / week</span>
+                  <span class="mt-0.5 text-xs text-gray-500">Very generous</span>
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </section>
+
+        <!-- ========== CALL-TO-ACTION BUTTONS ========== -->
+        <!--
+          ========== STRIPE SUBSCRIPTION CHECKOUT (TODO) ==========
+          Formspree is live now. When ready, also create a Stripe Checkout Session
+          (mode: 'subscription') using:
+
+            Basic Weekly Mow:        price_1TuxzEIwpXk8ife0iLcI5L4R  ($18/week)
+            Full Service Weekly Mow: price_1TuxyXIwpXk8ife0gx9HvW6T  ($20/week)
+
+          Optional tip line items (if selected):
+            $3/week tip: price_1TuyPCIwpXk8ife0X7ncoRfK
+            $5/week tip: price_1TuyPaIwpXk8ife07WXDaaJx
+
+          Also pass preferred_day, lawn_clippings, and notes as session metadata.
+          Do NOT put the Stripe secret key in this frontend file.
+        -->
+        <section class="space-y-4" aria-labelledby="cta-heading">
+          <h2 id="cta-heading" class="sr-only">Start your weekly plan</h2>
+
+          <p id="form-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
+          <p id="form-success" class="hidden rounded-xl border border-brand-green/30 bg-brand-green-light px-4 py-3 text-sm text-brand-charcoal" role="status"></p>
+
+          <!-- Basic Weekly CTA -->
+          <!-- STRIPE: Basic Weekly → price_1TuxzEIwpXk8ife0iLcI5L4R ($18/week) -->
+          <button
+            type="button"
+            id="cta-basic"
+            data-plan="basic"
+            data-plan-title="Basic Weekly Mow – $18/week"
+            data-price-id="price_1TuxzEIwpXk8ife0iLcI5L4R"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:text-lg"
+          >
+            Start Basic Weekly Mow – $18/week
+          </button>
+
+          <!-- Full Service Weekly CTA -->
+          <!-- STRIPE: Full Service Weekly → price_1TuxyXIwpXk8ife0gx9HvW6T ($20/week) -->
+          <button
+            type="button"
+            id="cta-full"
+            data-plan="full"
+            data-plan-title="Full Service Weekly Mow – $20/week"
+            data-price-id="price_1TuxyXIwpXk8ife0gx9HvW6T"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-brand-green bg-white px-6 py-4 text-base font-semibold text-brand-green transition hover:bg-brand-green-light focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:text-lg"
+          >
+            Start Full Service Weekly Mow – $20/week
+          </button>
+
+          <p class="text-center text-sm leading-relaxed text-gray-600">
+            <strong class="font-semibold text-brand-charcoal">Cancel anytime.</strong>
+            After you sign up, Ryan will text you to confirm the first weekly time window.
+          </p>
+          <p class="text-center text-xs text-gray-500">
+            Questions? Text or call
+            <a href="tel:+13039068597" class="font-semibold text-brand-green hover:underline">303.906.8597</a>
+          </p>
+        </section>
+      </form>
+
+      <!-- Soft exit / no pressure -->
+      <p class="mt-12 text-center text-sm text-gray-500">
+        Not ready for weekly service?
+        <a href="index.html" class="font-semibold text-brand-green hover:underline">Back to home</a>
+        — you’re always welcome anytime.
+      </p>
+    </div>
+  </main>
+
+  <footer class="border-t border-gray-100 bg-white">
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <p class="text-center text-xs text-gray-400">
+        &copy; <span id="year"></span> FieldsCraft Lawn Care. All rights reserved. · Fort Collins, Colorado
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    /*
+     * ========== WEEKLY SIGNUP FLOW ==========
+     * 1) Validate form fields
+     * 2) POST to Formspree (same endpoint as book.html) so Ryan gets an email
+     * 3) Show success — Ryan texts to confirm first weekly window
+     *
+     * Stripe subscription checkout can be added later (Price IDs on the CTAs).
+     */
+    const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdarqrky';
+
+    // Footer year
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+    const form = document.getElementById('weekly-form');
+    const formError = document.getElementById('form-error');
+    const formSuccess = document.getElementById('form-success');
+    const ctaBasic = document.getElementById('cta-basic');
+    const ctaFull = document.getElementById('cta-full');
+    const clipOther = document.getElementById('clip-other');
+    const clipOtherWrap = document.getElementById('clippings-other-wrap');
+    const clipOtherInput = document.getElementById('clippings-other');
+
+    // Show "other" clippings detail field when needed
+    document.querySelectorAll('input[name="lawn_clippings"]').forEach(function (radio) {
+      radio.addEventListener('change', function () {
+        const isOther = clipOther && clipOther.checked;
+        if (clipOtherWrap) clipOtherWrap.classList.toggle('hidden', !isOther);
+        if (clipOtherInput) {
+          clipOtherInput.required = !!isOther;
+          if (!isOther) clipOtherInput.value = '';
+        }
+      });
+    });
+
+    function showError(msg) {
+      if (formSuccess) formSuccess.classList.add('hidden');
+      if (!formError) return;
+      formError.textContent = msg;
+      formError.classList.remove('hidden');
+      formError.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function hideError() {
+      if (!formError) return;
+      formError.textContent = '';
+      formError.classList.add('hidden');
+    }
+
+    function showSuccess(msg) {
+      if (formError) formError.classList.add('hidden');
+      if (!formSuccess) return;
+      formSuccess.textContent = msg;
+      formSuccess.classList.remove('hidden');
+      formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function setButtonsLoading(isLoading, loadingLabel) {
+      [ctaBasic, ctaFull].forEach(function (btn) {
+        if (!btn) return;
+        if (isLoading) {
+          if (!btn.dataset.originalText) btn.dataset.originalText = btn.textContent.trim();
+          btn.disabled = true;
+          btn.textContent = loadingLabel || 'Sending…';
+        } else {
+          btn.disabled = false;
+          if (btn.dataset.originalText) btn.textContent = btn.dataset.originalText;
+        }
+      });
+    }
+
+    function collectPayload(planBtn) {
+      const day = form.querySelector('input[name="preferred_day"]:checked');
+      const clippings = form.querySelector('input[name="lawn_clippings"]:checked');
+      const tip = form.querySelector('input[name="weekly_tip"]:checked');
+      const planRadio = form.querySelector('input[name="weekly_plan"]:checked');
+
+      let clippingsPreference = clippings ? clippings.value : '';
+      if (clippingsPreference === 'Other' && clipOtherInput && clipOtherInput.value.trim()) {
+        clippingsPreference = 'Other: ' + clipOtherInput.value.trim();
+      }
+
+      const plan = planBtn.getAttribute('data-plan') || (planRadio ? planRadio.value : 'basic');
+      const planTitle = planBtn.getAttribute('data-plan-title') || '';
+      const priceId = planBtn.getAttribute('data-price-id') || '';
+      const tipValue = tip ? tip.value : '0';
+      const tipPriceId = tip ? (tip.getAttribute('data-price-id') || '') : '';
+
+      return {
+        full_name: (document.getElementById('full-name') || {}).value || '',
+        phone: (document.getElementById('phone') || {}).value || '',
+        email: (document.getElementById('email') || {}).value || '',
+        service_address: (document.getElementById('address') || {}).value || '',
+        preferred_day: day ? day.value : '',
+        lawn_clippings: clippingsPreference,
+        notes: (document.getElementById('notes') || {}).value || '',
+        weekly_plan: plan,
+        service_title: planTitle,
+        stripe_price_id: priceId,
+        weekly_tip: tipValue === '0' ? 'none' : '$' + tipValue + '/week',
+        tip_price_id: tipPriceId,
+      };
+    }
+
+    function validateForm() {
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        showError('Please fill in all required fields.');
+        return false;
+      }
+
+      const day = form.querySelector('input[name="preferred_day"]:checked');
+      if (!day) {
+        showError('Please choose a preferred day of the week.');
+        return false;
+      }
+
+      const clippings = form.querySelector('input[name="lawn_clippings"]:checked');
+      if (!clippings) {
+        showError('Please choose a lawn clippings preference.');
+        return false;
+      }
+
+      if (
+        clippings.value === 'Other' &&
+        clipOtherInput &&
+        !clipOtherInput.value.trim()
+      ) {
+        showError('Please describe your clippings preference.');
+        clipOtherInput.focus();
+        return false;
+      }
+
+      return true;
+    }
+
+    /**
+     * Build FormData for Formspree so Ryan gets a clear email + dashboard entry.
+     * Uses the same endpoint as book.html (https://formspree.io/f/mdarqrky).
+     */
+    function buildFormspreeData(payload) {
+      const data = new FormData();
+      data.append('_subject', 'New FieldsCraft Weekly Signup: ' + payload.service_title);
+      // Honeypot field (should stay empty) — Formspree spam protection
+      data.append('_gotcha', '');
+      data.append('form_type', 'weekly_signup');
+      data.append('full_name', payload.full_name);
+      data.append('phone', payload.phone);
+      data.append('email', payload.email);
+      data.append('service_address', payload.service_address);
+      data.append('preferred_day', payload.preferred_day);
+      data.append('lawn_clippings', payload.lawn_clippings);
+      data.append('notes', payload.notes || '');
+      data.append('service', payload.weekly_plan);
+      data.append('service_title', payload.service_title);
+      data.append('stripe_price_id', payload.stripe_price_id);
+      data.append('weekly_tip', payload.weekly_tip);
+      data.append('tip_price_id', payload.tip_price_id || '');
+      return data;
+    }
+
+    async function sendFormspreeNotification(payload) {
+      const response = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        body: buildFormspreeData(payload),
+        headers: { Accept: 'application/json' },
+      });
+
+      let result = {};
+      try {
+        result = await response.json();
+      } catch (parseErr) {
+        result = {};
+      }
+
+      if (!response.ok) {
+        const msg =
+          (result && result.error) ||
+          (result && result.errors && result.errors.map(function (e) { return e.message; }).join(' ')) ||
+          'Could not send your weekly signup. Please try again or text Ryan at 303.906.8597.';
+        throw new Error(msg);
+      }
+      return result;
+    }
+
+    async function handleWeeklyCta(event) {
+      const btn = event.currentTarget;
+      hideError();
+      if (formSuccess) formSuccess.classList.add('hidden');
+
+      // Keep plan radio in sync with the button clicked
+      const plan = btn.getAttribute('data-plan');
+      if (plan === 'full') {
+        const el = document.getElementById('plan-full');
+        if (el) el.checked = true;
+      } else {
+        const el = document.getElementById('plan-basic');
+        if (el) el.checked = true;
+      }
+
+      if (!validateForm()) return;
+
+      const payload = collectPayload(btn);
+
+      try {
+        setButtonsLoading(true, 'Sending your signup…');
+        await sendFormspreeNotification(payload);
+
+        /*
+         * TODO — Stripe subscription Checkout (after Formspree succeeds):
+         *   const res = await fetch('/api/create-weekly-subscription', {
+         *     method: 'POST',
+         *     headers: { 'Content-Type': 'application/json' },
+         *     body: JSON.stringify({
+         *       plan: payload.weekly_plan,
+         *       priceId: payload.stripe_price_id,
+         *       tipPriceId: payload.tip_price_id,
+         *       ...payload,
+         *     }),
+         *   });
+         *   const data = await res.json();
+         *   if (data.url) window.location.href = data.url;
+         *
+         * Price IDs:
+         *   basic: price_1TuxzEIwpXk8ife0iLcI5L4R ($18/week)
+         *   full:  price_1TuxyXIwpXk8ife0gx9HvW6T ($20/week)
+         *   tip $3: price_1TuyPCIwpXk8ife0X7ncoRfK
+         *   tip $5: price_1TuyPaIwpXk8ife07WXDaaJx
+         */
+
+        showSuccess(
+          'Thank you! We received your weekly signup for ' +
+            payload.service_title +
+            '. Ryan will text you soon to confirm the first weekly time window.'
+        );
+        setButtonsLoading(false);
+        if (ctaBasic) ctaBasic.disabled = true;
+        if (ctaFull) ctaFull.disabled = true;
+      } catch (err) {
+        console.error('Weekly Formspree error:', err);
+        setButtonsLoading(false);
+        showError(
+          (err && err.message) ||
+            'Something went wrong sending your signup. Please try again or text Ryan at 303.906.8597.'
+        );
+      }
+    }
+
+    if (ctaBasic) ctaBasic.addEventListener('click', handleWeeklyCta);
+    if (ctaFull) ctaFull.addEventListener('click', handleWeeklyCta);
+  </script>
+</body>
+</html>
