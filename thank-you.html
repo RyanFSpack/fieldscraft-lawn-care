@@ -80,11 +80,11 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
           </svg>
         </div>
-        <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Booking confirmed</p>
-        <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-brand-charcoal sm:text-4xl">
+        <p id="ty-eyebrow" class="text-sm font-semibold uppercase tracking-wider text-brand-green">Booking confirmed</p>
+        <h1 id="ty-title" class="mt-2 text-3xl font-extrabold tracking-tight text-brand-charcoal sm:text-4xl">
           Thank you for your booking!
         </h1>
-        <p class="mx-auto mt-5 max-w-lg text-base leading-relaxed text-gray-600 sm:text-lg">
+        <p id="ty-body" class="mx-auto mt-5 max-w-lg text-base leading-relaxed text-gray-600 sm:text-lg">
           Your payment went through and we’ve received your booking details.
           <strong class="font-semibold text-brand-charcoal">Ryan will text you within 24 hours from
           <a href="tel:+13039068597" class="font-semibold text-brand-green hover:underline">303.906.8597</a>
@@ -170,6 +170,28 @@
     // Footer year
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+    // Weekly subscription checkout lands here with ?type=weekly
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      if ((params.get('type') || '').toLowerCase() === 'weekly') {
+        const eyebrow = document.getElementById('ty-eyebrow');
+        const title = document.getElementById('ty-title');
+        const body = document.getElementById('ty-body');
+        if (eyebrow) eyebrow.textContent = 'Weekly plan confirmed';
+        if (title) title.textContent = 'Thank you for starting weekly service!';
+        if (body) {
+          body.innerHTML =
+            'Your subscription payment went through and we’ve received your weekly plan details. ' +
+            '<strong class="font-semibold text-brand-charcoal">Ryan will text you soon from ' +
+            '<a href="tel:+13039068597" class="font-semibold text-brand-green hover:underline">303.906.8597</a> ' +
+            'to confirm Bromley’s first weekly time window. Cancel anytime.</strong>';
+        }
+        document.title = 'Weekly Plan Confirmed | FieldsCraft Lawn Care';
+      }
+    } catch (err) {
+      // Non-fatal — default one-time booking copy still shows
+    }
   </script>
 </body>
 </html>

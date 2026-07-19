@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!--
     Post one-time-mow thank-you + weekly upsell page.
+    Written in Bromley’s first-person voice.
     Customers land here after a completed one-time service.
     Flow: Formspree emails Ryan the weekly signup details.
-    Stripe subscription checkout can be wired later — see comments near the CTAs.
+    Stripe subscription checkout can be wired later — see comment on the CTA button.
   -->
-  <meta name="description" content="Thank you for choosing FieldsCraft. Switch to a simple weekly mow with Bromley — cancel anytime.">
+  <meta name="description" content="Thanks for letting me mow your lawn. Switch to a simple weekly mow with me, Bromley — cancel anytime.">
   <meta name="robots" content="noindex">
   <title>Weekly Mow | FieldsCraft Lawn Care</title>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -80,16 +81,16 @@
   </header>
 
   <main>
-    <!-- ========== HERO: Thank-you headline ========== -->
+    <!-- ========== HERO: Thank-you headline (Bromley’s voice) ========== -->
     <section class="border-b border-gray-100 bg-gradient-to-b from-brand-green-light/40 to-white">
       <div class="mx-auto max-w-3xl px-4 py-12 text-center sm:px-6 sm:py-16 lg:px-8">
         <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Thank you</p>
         <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-brand-charcoal sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
-          Thanks for trusting us with your lawn!
+          Thanks for letting me mow your lawn!
         </h1>
         <p class="mx-auto mt-4 max-w-xl text-base leading-relaxed text-gray-600 sm:text-lg">
-          We hope you’re happy with how it looks. If you’d like to keep it that way every week —
-          without having to rebook — we’ve got a simple option for you.
+          I hope you like how it looks. If you’d like me to come back every week —
+          so you never have to rebook — I have a simple plan for you.
         </p>
       </div>
     </section>
@@ -105,44 +106,44 @@
       <figure class="overflow-hidden rounded-2xl shadow-soft ring-1 ring-black/5">
         <img
           src="bromley-thanks.jpg"
-          alt="Bromley smiling after a job well done — thank you from FieldsCraft Lawn Care"
+          alt="Bromley smiling after a job well done"
           width="1600"
           height="1200"
           class="aspect-[4/3] w-full object-cover object-center sm:aspect-[16/10]"
           fetchpriority="high"
         >
       </figure>
-      <p class="mt-3 text-center text-sm text-gray-500">Bromley — your neighbor at FieldsCraft</p>
+      <p class="mt-3 text-center text-sm text-gray-500">That’s me — Bromley, your neighbor</p>
 
       <!-- ========== PERSONAL MESSAGE ========== -->
       <section class="mt-10 rounded-2xl border border-gray-100 bg-gray-50/80 p-6 shadow-card sm:p-8">
-        <h2 class="text-lg font-bold text-brand-charcoal sm:text-xl">A quick note from the FieldsCraft family</h2>
+        <h2 class="text-lg font-bold text-brand-charcoal sm:text-xl">A quick note from me</h2>
         <p class="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
-          Hi there — we’re so glad Bromley could take care of your yard. He works hard to leave
-          every lawn neat and looking its best, and it means a lot that you chose FieldsCraft.
+          Hi — I’m so glad I got to take care of your yard. I work hard to leave every lawn
+          neat and looking its best, and it means a lot that you trusted me with yours.
         </p>
         <p class="mt-3 text-sm leading-relaxed text-gray-600 sm:text-base">
-          If you’d like Bromley to come back on a regular weekly schedule, you can set that up
-          below. No long-term contract — just reliable care, week after week. Cancel anytime.
+          If you’d like me to come back on a regular weekly schedule, you can pick a plan
+          below. No long-term contract — just me showing up each week. Cancel anytime.
         </p>
       </section>
 
       <!--
         ========== WEEKLY SIGNUP FORM ==========
         Submits to Formspree (same endpoint as book.html) so Ryan gets an email.
-        Stripe subscription checkout can be added later (see CTA comments).
+        Stripe subscription checkout can be added later (see CTA comment).
       -->
       <form id="weekly-form" class="mt-12 space-y-10" novalidate>
 
-        <!-- ========== WEEKLY PLAN OPTIONS ========== -->
+        <!-- ========== WEEKLY PLAN OPTIONS (selectable cards) ========== -->
         <section aria-labelledby="weekly-plans-heading">
           <div class="text-center sm:text-left">
             <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Weekly service</p>
             <h2 id="weekly-plans-heading" class="mt-2 text-2xl font-bold tracking-tight text-brand-charcoal sm:text-3xl">
-              Keep your lawn looking great every week
+              I’d love to keep your lawn looking great every week
             </h2>
             <p class="mt-2 text-sm text-gray-600 sm:text-base">
-              Choose the plan that fits — simple weekly care, no rebooking needed.
+              Tap a plan to choose it — then fill in your details below.
             </p>
           </div>
 
@@ -158,16 +159,29 @@
             </p>
           </div>
 
-          <div class="mt-6 grid gap-5 sm:grid-cols-2">
-            <!--
-              Basic Weekly Mow – $18/week
-              Stripe Price ID: price_1TuxzEIwpXk8ife0iLcI5L4R
-              TODO: Wire Stripe subscription Checkout / Payment Link for this Price ID
-            -->
-            <article class="plan-option relative flex flex-col rounded-2xl border-2 border-gray-200 bg-white p-6 shadow-card transition hover:border-brand-green/40 sm:p-7">
-              <input type="radio" id="plan-basic" name="weekly_plan" value="basic" class="sr-only" checked>
-              <label for="plan-basic" class="absolute inset-0 cursor-pointer rounded-2xl border-2 border-transparent" aria-label="Select Basic Weekly Mow"></label>
-              <div class="relative z-10 pointer-events-none">
+          <!--
+            Plan cards are selectable radios. Clicking a card highlights it as the chosen plan.
+            The single CTA at the bottom uses whichever plan is selected (and its Stripe Price ID).
+              Basic Weekly Mow:        price_1TuxzEIwpXk8ife0iLcI5L4R  ($18/week)
+              Full Service Weekly Mow: price_1TuxyXIwpXk8ife0gx9HvW6T  ($20/week)
+          -->
+          <div class="mt-6 grid gap-5 sm:grid-cols-2" role="radiogroup" aria-label="Choose your weekly plan">
+            <!-- Basic Weekly Mow – $18/week · Stripe Price ID: price_1TuxzEIwpXk8ife0iLcI5L4R -->
+            <div class="plan-option">
+              <input
+                type="radio"
+                id="plan-basic"
+                name="weekly_plan"
+                value="basic"
+                class="sr-only"
+                checked
+                data-plan-title="Basic Weekly Mow – $18/week"
+                data-price-id="price_1TuxzEIwpXk8ife0iLcI5L4R"
+              >
+              <label
+                for="plan-basic"
+                class="relative flex h-full cursor-pointer flex-col rounded-2xl border-2 border-gray-200 bg-white p-6 shadow-card transition hover:border-brand-green/50 sm:p-7"
+              >
                 <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green-light text-brand-green" aria-hidden="true">
                   <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-1.5 4-3 7-6 10h12c-3-3-4.5-6-6-10zM6 20h12"/>
@@ -180,26 +194,32 @@
                   <span class="text-sm font-medium text-gray-500"> / week</span>
                 </p>
                 <ul class="mt-5 space-y-2.5 text-sm text-gray-600">
-                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Full lawn mowed evenly</li>
-                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Clean, professional finish</li>
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> I mow your full lawn evenly</li>
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Clean, careful finish</li>
                   <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Same great rate, every week</li>
                 </ul>
-                <input type="hidden" name="basic_price_id" value="price_1TuxzEIwpXk8ife0iLcI5L4R" disabled>
-              </div>
-            </article>
+                <p class="mt-5 text-xs font-semibold uppercase tracking-wide text-brand-green">Tap to select</p>
+              </label>
+            </div>
 
-            <!--
-              Full Service Weekly Mow – $20/week
-              Stripe Price ID: price_1TuxyXIwpXk8ife0gx9HvW6T
-              TODO: Wire Stripe subscription Checkout / Payment Link for this Price ID
-            -->
-            <article class="plan-option relative flex flex-col rounded-2xl border-2 border-brand-green bg-white p-6 shadow-soft sm:p-7">
-              <span class="absolute -top-3 right-5 z-20 rounded-full bg-brand-gold px-3 py-0.5 text-xs font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
-                Best value
-              </span>
-              <input type="radio" id="plan-full" name="weekly_plan" value="full" class="sr-only">
-              <label for="plan-full" class="absolute inset-0 z-10 cursor-pointer rounded-2xl border-2 border-transparent" aria-label="Select Full Service Weekly Mow"></label>
-              <div class="relative z-10 pointer-events-none">
+            <!-- Full Service Weekly Mow – $20/week · Stripe Price ID: price_1TuxyXIwpXk8ife0gx9HvW6T -->
+            <div class="plan-option">
+              <input
+                type="radio"
+                id="plan-full"
+                name="weekly_plan"
+                value="full"
+                class="sr-only"
+                data-plan-title="Full Service Weekly Mow – $20/week"
+                data-price-id="price_1TuxyXIwpXk8ife0gx9HvW6T"
+              >
+              <label
+                for="plan-full"
+                class="relative flex h-full cursor-pointer flex-col rounded-2xl border-2 border-gray-200 bg-white p-6 shadow-card transition hover:border-brand-green/50 sm:p-7"
+              >
+                <span class="absolute -top-3 right-5 rounded-full bg-brand-gold px-3 py-0.5 text-xs font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
+                  Best value
+                </span>
                 <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green text-white" aria-hidden="true">
                   <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
@@ -213,12 +233,12 @@
                 </p>
                 <ul class="mt-5 space-y-2.5 text-sm text-gray-600">
                   <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Everything in Basic Weekly</li>
-                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Trimming along borders</li>
-                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Blow off walkways &amp; driveways</li>
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> I trim along the borders</li>
+                  <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> I blow off walkways &amp; driveways</li>
                 </ul>
-                <input type="hidden" name="full_price_id" value="price_1TuxyXIwpXk8ife0gx9HvW6T" disabled>
-              </div>
-            </article>
+                <p class="mt-5 text-xs font-semibold uppercase tracking-wide text-brand-green">Tap to select</p>
+              </label>
+            </div>
           </div>
         </section>
 
@@ -228,7 +248,7 @@
             Your weekly preferences
           </h2>
           <p class="mt-1 text-sm text-gray-500">
-            So we can set Bromley up for a smooth first weekly visit.
+            A few details so I can get my first weekly visit just right.
           </p>
 
           <div class="mt-6 space-y-6">
@@ -341,7 +361,7 @@
                 Lawn Clippings Preference <span class="text-brand-green">*</span>
               </legend>
               <p class="mb-3 text-xs leading-relaxed text-gray-500">
-                Tell us how you’d like clippings handled so Bromley can do the job right each week.
+                Tell me how you’d like clippings handled so I can do the job right each week.
               </p>
               <div class="space-y-3">
                 <div class="clip-option">
@@ -383,7 +403,7 @@
                 Notes or special instructions
               </label>
               <p class="mb-2 text-xs leading-relaxed text-gray-500">
-                Gate codes, pets, flower beds, access notes — anything that helps Bromley each week.
+                Gate codes, pets, flower beds, access notes — anything that helps me each week.
               </p>
               <textarea
                 id="notes"
@@ -396,7 +416,7 @@
           </div>
         </section>
 
-        <!-- ========== OPTIONAL WEEKLY TIP (last before CTAs) ========== -->
+        <!-- ========== OPTIONAL WEEKLY TIP (last before CTA) ========== -->
         <!--
           Weekly tip Price IDs (for Stripe subscription line items later):
           - $3/week tip: price_1TuyPCIwpXk8ife0X7ncoRfK
@@ -409,7 +429,7 @@
               Optional weekly tip
             </legend>
             <p class="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
-              If you feel Bromley has done a great job, you’re welcome to add a small weekly tip.
+              If you feel I’ve done a great job, you’re welcome to add a small weekly tip.
               Completely optional.
             </p>
             <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -440,57 +460,45 @@
           </fieldset>
         </section>
 
-        <!-- ========== CALL-TO-ACTION BUTTONS ========== -->
-        <!--
-          ========== STRIPE SUBSCRIPTION CHECKOUT (TODO) ==========
-          Formspree is live now. When ready, also create a Stripe Checkout Session
-          (mode: 'subscription') using:
-
-            Basic Weekly Mow:        price_1TuxzEIwpXk8ife0iLcI5L4R  ($18/week)
-            Full Service Weekly Mow: price_1TuxyXIwpXk8ife0gx9HvW6T  ($20/week)
-
-          Optional tip line items (if selected):
-            $3/week tip: price_1TuyPCIwpXk8ife0X7ncoRfK
-            $5/week tip: price_1TuyPaIwpXk8ife07WXDaaJx
-
-          Also pass preferred_day, lawn_clippings, and notes as session metadata.
-          Do NOT put the Stripe secret key in this frontend file.
-        -->
+        <!-- ========== SINGLE CALL-TO-ACTION ========== -->
         <section class="space-y-4" aria-labelledby="cta-heading">
-          <h2 id="cta-heading" class="sr-only">Start your weekly plan</h2>
+          <h2 id="cta-heading" class="sr-only">Start my weekly plan</h2>
 
           <p id="form-error" class="hidden rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert"></p>
           <p id="form-success" class="hidden rounded-xl border border-brand-green/30 bg-brand-green-light px-4 py-3 text-sm text-brand-charcoal" role="status"></p>
 
-          <!-- Basic Weekly CTA -->
-          <!-- STRIPE: Basic Weekly → price_1TuxzEIwpXk8ife0iLcI5L4R ($18/week) -->
+          <!--
+            ========== STRIPE SUBSCRIPTION CHECKOUT ==========
+            This button:
+              1) Reads the selected plan card (weekly_plan radio + data-price-id)
+              2) POSTs signup details to Formspree (email Ryan)
+              3) POSTs to /api/create-checkout-session with formType: 'weekly'
+                 which creates a Stripe Checkout Session in mode: 'subscription'
+                 using the correct Price ID for the selected plan:
+
+                   Basic Weekly Mow:        price_1TuxzEIwpXk8ife0iLcI5L4R  ($18/week)
+                   Full Service Weekly Mow: price_1TuxyXIwpXk8ife0gx9HvW6T  ($20/week)
+
+                 Optional tip line items (if selected):
+                   $3/week tip: price_1TuyPCIwpXk8ife0X7ncoRfK
+                   $5/week tip: price_1TuyPaIwpXk8ife07WXDaaJx
+
+              4) Redirects to Stripe Checkout; on success Stripe sends the customer
+                 to /thank-you.html?session_id={CHECKOUT_SESSION_ID}&type=weekly
+
+            Do NOT put the Stripe secret key in this frontend file.
+          -->
           <button
             type="button"
-            id="cta-basic"
-            data-plan="basic"
-            data-plan-title="Basic Weekly Mow – $18/week"
-            data-price-id="price_1TuxzEIwpXk8ife0iLcI5L4R"
+            id="cta-start"
             class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-green px-6 py-4 text-base font-semibold text-white shadow-soft transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:text-lg"
           >
-            Start Basic Weekly Mow – $18/week
-          </button>
-
-          <!-- Full Service Weekly CTA -->
-          <!-- STRIPE: Full Service Weekly → price_1TuxyXIwpXk8ife0gx9HvW6T ($20/week) -->
-          <button
-            type="button"
-            id="cta-full"
-            data-plan="full"
-            data-plan-title="Full Service Weekly Mow – $20/week"
-            data-price-id="price_1TuxyXIwpXk8ife0gx9HvW6T"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-brand-green bg-white px-6 py-4 text-base font-semibold text-brand-green transition hover:bg-brand-green-light focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:text-lg"
-          >
-            Start Full Service Weekly Mow – $20/week
+            Start My Weekly Plan
           </button>
 
           <p class="text-center text-sm leading-relaxed text-gray-600">
             <strong class="font-semibold text-brand-charcoal">Cancel anytime.</strong>
-            After you sign up, Ryan will text you to confirm the first weekly time window.
+            After you sign up, Ryan will text you to confirm my first weekly time window.
           </p>
           <p class="text-center text-xs text-gray-500">
             Questions? Text or call
@@ -503,7 +511,7 @@
       <p class="mt-12 text-center text-sm text-gray-500">
         Not ready for weekly service?
         <a href="index.html" class="font-semibold text-brand-green hover:underline">Back to home</a>
-        — you’re always welcome anytime.
+        — I’d still love to help anytime.
       </p>
     </div>
   </main>
@@ -519,13 +527,17 @@
   <script>
     /*
      * ========== WEEKLY SIGNUP FLOW ==========
-     * 1) Validate form fields
-     * 2) POST to Formspree (same endpoint as book.html) so Ryan gets an email
-     * 3) Show success — Ryan texts to confirm first weekly window
+     * 1) Customer selects a plan card (basic or full)
+     * 2) Validate form fields
+     * 3) POST to Formspree (same endpoint as book.html) so Ryan gets an email
+     * 4) POST to /api/create-checkout-session (formType: 'weekly') → Stripe
+     *    subscription Checkout Session for the selected plan Price ID
+     * 5) Redirect browser to Stripe; success_url → thank-you.html
      *
-     * Stripe subscription checkout can be added later (Price IDs on the CTAs).
+     * This page never uses the Stripe secret key.
      */
     const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdarqrky';
+    const CHECKOUT_API = '/api/create-checkout-session';
 
     // Footer year
     const yearEl = document.getElementById('year');
@@ -534,8 +546,7 @@
     const form = document.getElementById('weekly-form');
     const formError = document.getElementById('form-error');
     const formSuccess = document.getElementById('form-success');
-    const ctaBasic = document.getElementById('cta-basic');
-    const ctaFull = document.getElementById('cta-full');
+    const ctaStart = document.getElementById('cta-start');
     const clipOther = document.getElementById('clip-other');
     const clipOtherWrap = document.getElementById('clippings-other-wrap');
     const clipOtherInput = document.getElementById('clippings-other');
@@ -574,49 +585,75 @@
       formSuccess.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    function setButtonsLoading(isLoading, loadingLabel) {
-      [ctaBasic, ctaFull].forEach(function (btn) {
-        if (!btn) return;
-        if (isLoading) {
-          if (!btn.dataset.originalText) btn.dataset.originalText = btn.textContent.trim();
-          btn.disabled = true;
-          btn.textContent = loadingLabel || 'Sending…';
-        } else {
-          btn.disabled = false;
-          if (btn.dataset.originalText) btn.textContent = btn.dataset.originalText;
-        }
-      });
+    function setButtonLoading(isLoading, loadingLabel) {
+      if (!ctaStart) return;
+      if (isLoading) {
+        if (!ctaStart.dataset.originalText) ctaStart.dataset.originalText = ctaStart.textContent.trim();
+        ctaStart.disabled = true;
+        ctaStart.textContent = loadingLabel || 'Sending…';
+      } else {
+        ctaStart.disabled = false;
+        if (ctaStart.dataset.originalText) ctaStart.textContent = ctaStart.dataset.originalText;
+      }
     }
 
-    function collectPayload(planBtn) {
+    /** Return the currently selected plan radio (card) */
+    function getSelectedPlan() {
+      return form ? form.querySelector('input[name="weekly_plan"]:checked') : null;
+    }
+
+    /**
+     * Collect form data for Formspree + Stripe API.
+     * Field names match what /api/create-checkout-session expects for weekly mode,
+     * plus aliases used in the Formspree email.
+     */
+    function collectPayload() {
       const day = form.querySelector('input[name="preferred_day"]:checked');
       const clippings = form.querySelector('input[name="lawn_clippings"]:checked');
       const tip = form.querySelector('input[name="weekly_tip"]:checked');
-      const planRadio = form.querySelector('input[name="weekly_plan"]:checked');
+      const planRadio = getSelectedPlan();
 
       let clippingsPreference = clippings ? clippings.value : '';
       if (clippingsPreference === 'Other' && clipOtherInput && clipOtherInput.value.trim()) {
         clippingsPreference = 'Other: ' + clipOtherInput.value.trim();
       }
 
-      const plan = planBtn.getAttribute('data-plan') || (planRadio ? planRadio.value : 'basic');
-      const planTitle = planBtn.getAttribute('data-plan-title') || '';
-      const priceId = planBtn.getAttribute('data-price-id') || '';
+      const plan = planRadio ? planRadio.value : 'basic';
+      const planTitle = planRadio ? (planRadio.getAttribute('data-plan-title') || '') : '';
+      const priceId = planRadio ? (planRadio.getAttribute('data-price-id') || '') : '';
       const tipValue = tip ? tip.value : '0';
       const tipPriceId = tip ? (tip.getAttribute('data-price-id') || '') : '';
+      const tipAmount = tipValue === '0' ? 0 : parseFloat(tipValue) || 0;
+
+      const name = (document.getElementById('full-name') || {}).value || '';
+      const phone = (document.getElementById('phone') || {}).value || '';
+      const email = (document.getElementById('email') || {}).value || '';
+      const address = (document.getElementById('address') || {}).value || '';
+      const notes = (document.getElementById('notes') || {}).value || '';
+      const preferredDay = day ? day.value : '';
 
       return {
-        full_name: (document.getElementById('full-name') || {}).value || '',
-        phone: (document.getElementById('phone') || {}).value || '',
-        email: (document.getElementById('email') || {}).value || '',
-        service_address: (document.getElementById('address') || {}).value || '',
-        preferred_day: day ? day.value : '',
+        // API-shaped fields (create-checkout-session weekly branch)
+        formType: 'weekly',
+        name: name,
+        phone: phone,
+        email: email,
+        address: address,
+        preferredDay: preferredDay,
+        clippingsPreference: clippingsPreference,
+        notes: notes,
+        serviceType: plan, // 'basic' | 'full' → resolved to *_weekly on server
+        tipAmount: tipAmount,
+        tipPriceId: tipPriceId,
+        // Formspree / display aliases
+        full_name: name,
+        service_address: address,
+        preferred_day: preferredDay,
         lawn_clippings: clippingsPreference,
-        notes: (document.getElementById('notes') || {}).value || '',
         weekly_plan: plan,
         service_title: planTitle,
         stripe_price_id: priceId,
-        weekly_tip: tipValue === '0' ? 'none' : '$' + tipValue + '/week',
+        weekly_tip: tipAmount > 0 ? '$' + tipAmount + '/week' : 'none',
         tip_price_id: tipPriceId,
       };
     }
@@ -625,6 +662,12 @@
       if (!form.checkValidity()) {
         form.reportValidity();
         showError('Please fill in all required fields.');
+        return false;
+      }
+
+      const plan = getSelectedPlan();
+      if (!plan) {
+        showError('Please choose a weekly plan above.');
         return false;
       }
 
@@ -696,77 +739,81 @@
         const msg =
           (result && result.error) ||
           (result && result.errors && result.errors.map(function (e) { return e.message; }).join(' ')) ||
-          'Could not send your weekly signup. Please try again or text Ryan at 303.906.8597.';
+          'Could not send weekly signup email via Formspree.';
         throw new Error(msg);
       }
       return result;
     }
 
-    async function handleWeeklyCta(event) {
-      const btn = event.currentTarget;
+    /**
+     * Create Stripe subscription Checkout Session via serverless API.
+     * Returns { url, sessionId, mode } on success.
+     */
+    async function createWeeklyCheckoutSession(payload) {
+      const response = await fetch(CHECKOUT_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      let data = {};
+      try {
+        data = await response.json();
+      } catch (parseErr) {
+        data = {};
+      }
+
+      if (!response.ok || !data.url) {
+        throw new Error(
+          (data && data.error) ||
+            'Could not start checkout. Please try again or text Ryan at 303.906.8597.'
+        );
+      }
+      return data;
+    }
+
+    async function handleWeeklyCta() {
       hideError();
       if (formSuccess) formSuccess.classList.add('hidden');
 
-      // Keep plan radio in sync with the button clicked
-      const plan = btn.getAttribute('data-plan');
-      if (plan === 'full') {
-        const el = document.getElementById('plan-full');
-        if (el) el.checked = true;
-      } else {
-        const el = document.getElementById('plan-basic');
-        if (el) el.checked = true;
-      }
-
       if (!validateForm()) return;
 
-      const payload = collectPayload(btn);
+      const payload = collectPayload();
 
       try {
-        setButtonsLoading(true, 'Sending your signup…');
-        await sendFormspreeNotification(payload);
+        setButtonLoading(true, 'Sending your signup…');
 
-        /*
-         * TODO — Stripe subscription Checkout (after Formspree succeeds):
-         *   const res = await fetch('/api/create-weekly-subscription', {
-         *     method: 'POST',
-         *     headers: { 'Content-Type': 'application/json' },
-         *     body: JSON.stringify({
-         *       plan: payload.weekly_plan,
-         *       priceId: payload.stripe_price_id,
-         *       tipPriceId: payload.tip_price_id,
-         *       ...payload,
-         *     }),
-         *   });
-         *   const data = await res.json();
-         *   if (data.url) window.location.href = data.url;
-         *
-         * Price IDs:
-         *   basic: price_1TuxzEIwpXk8ife0iLcI5L4R ($18/week)
-         *   full:  price_1TuxyXIwpXk8ife0gx9HvW6T ($20/week)
-         *   tip $3: price_1TuyPCIwpXk8ife0X7ncoRfK
-         *   tip $5: price_1TuyPaIwpXk8ife07WXDaaJx
-         */
+        // ---- Step 1: Formspree (email Ryan + log submission) ----
+        // Soft-fail: do not block Stripe if Formspree is down (same pattern as book.html)
+        try {
+          await sendFormspreeNotification(payload);
+        } catch (formspreeErr) {
+          console.error('Formspree error:', formspreeErr);
+        }
 
-        showSuccess(
-          'Thank you! We received your weekly signup for ' +
-            payload.service_title +
-            '. Ryan will text you soon to confirm the first weekly time window.'
-        );
-        setButtonsLoading(false);
-        if (ctaBasic) ctaBasic.disabled = true;
-        if (ctaFull) ctaFull.disabled = true;
+        // ---- Step 2: Stripe subscription Checkout Session ----
+        setButtonLoading(true, 'Starting secure checkout…');
+        const data = await createWeeklyCheckoutSession(payload);
+
+        showSuccess('Signup details sent! Redirecting you to secure Stripe Checkout…');
+
+        // Send the customer to Stripe-hosted Checkout
+        // success_url on the session → /thank-you.html?session_id=…&type=weekly
+        window.location.href = data.url;
       } catch (err) {
-        console.error('Weekly Formspree error:', err);
-        setButtonsLoading(false);
+        console.error('Weekly signup error:', err);
+        setButtonLoading(false);
         showError(
           (err && err.message) ||
-            'Something went wrong sending your signup. Please try again or text Ryan at 303.906.8597.'
+            'Something went wrong. Please try again or text Ryan at 303.906.8597.'
         );
       }
     }
 
-    if (ctaBasic) ctaBasic.addEventListener('click', handleWeeklyCta);
-    if (ctaFull) ctaFull.addEventListener('click', handleWeeklyCta);
+    if (ctaStart) ctaStart.addEventListener('click', handleWeeklyCta);
   </script>
 </body>
 </html>
