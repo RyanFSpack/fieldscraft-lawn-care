@@ -129,25 +129,35 @@ function resolveWeeklyServiceType(body) {
   return 'basic_weekly';
 }
 
-/** Map tip dollars / tip price id to a weekly tip Price ID (or null) */
-function resolveWeeklyTipPriceId(body) {
-  // Prefer explicit tip Price ID from the form
-  const tipPriceId = String(body.tipPriceId || body.tip_price_id || '').trim();
-  if (tipPriceId === PRICE_IDS.tip_weekly_3 || tipPriceId === PRICE_IDS.tip_weekly_5) {
-    return tipPriceId;
+/**
+ * Resolve optional weekly tip amount in dollars (0 if none).
+ *
+ * NOTE: We intentionally do NOT attach the Dashboard tip Price IDs
+ * (tip_weekly_3 / tip_weekly_5) as line_items alongside the plan Price.
+ * Stripe Checkout rejects mixed billing intervals, and the $5 tip Price
+ * in the Dashboard is not on the same weekly interval as the plans.
+ * Instead we charge tips via price_data with recurring.interval = 'week'
+ * so they always match the weekly plan cadence.
+ */
+function resolveWeeklyTipDollars(body) {
+  // Prefer numeric tipAmount from the form
+  let tipDollars = Number(body.tipAmount);
+  if (Number.isFinite(tipDollars) && tipDollars > 0) {
+    if (tipDollars > 500) tipDollars = 500;
+    return tipDollars;
   }
 
-  // Fall back to tip amount (dollars)
-  let tipDollars = Number(body.tipAmount != null ? body.tipAmount : body.weekly_tip);
-  if (!Number.isFinite(tipDollars) || tipDollars <= 0) {
-    // Also accept strings like "$3/week"
-    const tipStr = String(body.weekly_tip || body.tip_amount || '').replace(/[^0-9.]/g, '');
-    tipDollars = parseFloat(tipStr);
-  }
-  if (!Number.isFinite(tipDollars) || tipDollars <= 0) return null;
-  if (tipDollars >= 4.5) return PRICE_IDS.tip_weekly_5;
-  if (tipDollars >= 2.5) return PRICE_IDS.tip_weekly_3;
-  return null;
+  // Map known tip Price IDs from the form to dollar amounts
+  const tipPriceId = String(body.tipPriceId || body.tip_price_id || '').trim();
+  if (tipPriceId === PRICE_IDS.tip_weekly_5) return 5;
+  if (tipPriceId === PRICE_IDS.tip_weekly_3) return 3;
+
+  // Fall back to strings like "$3/week" or "3"
+  const tipStr = String(body.weekly_tip || body.tip_amount || '').replace(/[^0-9.]/g, '');
+  tipDollars = parseFloat(tipStr);
+  if (!Number.isFinite(tipDollars) || tipDollars <= 0) return 0;
+  if (tipDollars > 500) tipDollars = 500;
+  return tipDollars;
 }
 
 async function createOneTimeSession(stripe, body, origin) {
@@ -314,7 +324,8 @@ async function createWeeklySession(stripe, body, origin) {
 
   const mainPriceId = PRICE_IDS[serviceType];
   const serviceLabel = SERVICE_LABELS[serviceType];
-  const tipPriceId = resolveWeeklyTipPriceId(body);
+  const tipDollars = resolveWeeklyTipDollars(body);
+  const tipCents = Math.round(tipDollars * 100);
 
   const metadata = {
     formType: 'weekly',
@@ -327,12 +338,7 @@ async function createWeeklySession(stripe, body, origin) {
     notes: notes.slice(0, 500),
     serviceType: serviceType,
     serviceLabel: serviceLabel,
-    tipAmount:
-      tipPriceId === PRICE_IDS.tip_weekly_5
-        ? '$5/week'
-        : tipPriceId === PRICE_IDS.tip_weekly_3
-          ? '$3/week'
-          : 'none',
+    tipAmount: tipDollars > 0 ? `$${tipDollars.toFixed(2)}/week` : 'none',
   };
 
   // Subscription Checkout: main weekly plan + optional weekly tip
@@ -343,9 +349,18 @@ async function createWeeklySession(stripe, body, origin) {
     },
   ];
 
-  if (tipPriceId) {
+  // Optional tip as matching weekly recurring price_data (avoids mixed intervals)
+  if (tipCents > 0) {
     lineItems.push({
-      price: tipPriceId,
+      price_data: {
+        currency: 'usd',
+        unit_amount: tipCents,
+        recurring: { interval: 'week' },
+        product_data: {
+          name: 'Weekly tip for Bromley',
+          description: 'Optional weekly tip — thank you for supporting Bromley!',
+        },
+      },
       quantity: 1,
     });
   }
