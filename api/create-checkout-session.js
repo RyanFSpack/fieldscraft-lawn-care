@@ -38,7 +38,11 @@ const PRICE_IDS = {
   tip_weekly_3: 'price_1TuyPCIwpXk8ife0X7ncoRfK', // $3/week tip
   tip_weekly_5: 'price_1TuyPaIwpXk8ife07WXDaaJx', // $5/week tip
 
-  // Optional one-time add-ons shown on Stripe Checkout
+  // Weekly recurring extras (subscription line items — weekly path only)
+  watering_weekly: 'price_1TuzSfIwpXk8ife0bbpe9ms1', // Flower Watering – $7/week
+  poop_weekly: 'price_1TuzR9IwpXk8ife0g0quOcHS', // Dog Poop Pickup – $15/week
+
+  // Optional one-time add-ons shown on Stripe Checkout (one-time path only)
   flowerWatering: 'price_1Ts5ZKIwpXk8ife07lehq9P1', // Flower Watering
   dogPoopPickup: 'price_1Ts5aEIwpXk8ife0LY5RgXd9', // Dog Poop Pickup
 
@@ -158,6 +162,58 @@ function resolveWeeklyTipDollars(body) {
   if (!Number.isFinite(tipDollars) || tipDollars <= 0) return 0;
   if (tipDollars > 500) tipDollars = 500;
   return tipDollars;
+}
+
+/**
+ * Resolve optional weekly extras from the request body.
+ * Accepts body.extras as an array of keys, and/or boolean flags
+ * body.flowerWatering / body.dogPoopPickup. Returns a de-duped list of
+ * 'watering' and/or 'poop' only (never one-time Price IDs).
+ */
+function resolveWeeklyExtras(body) {
+  const allowed = new Set(['watering', 'poop']);
+  const found = new Set();
+
+  const raw = body.extras;
+  if (Array.isArray(raw)) {
+    for (const item of raw) {
+      const key = String(item || '')
+        .trim()
+        .toLowerCase();
+      // Normalize common aliases from forms / older payloads
+      if (key === 'watering' || key === 'flowerwatering' || key === 'flower_watering') {
+        found.add('watering');
+      } else if (key === 'poop' || key === 'dogpoop' || key === 'dog_poop' || key === 'dogpooppickup') {
+        found.add('poop');
+      } else if (allowed.has(key)) {
+        found.add(key);
+      }
+    }
+  } else if (typeof raw === 'string' && raw.trim()) {
+    // Comma-separated string support, e.g. "watering,poop"
+    for (const part of raw.split(',')) {
+      const key = part.trim().toLowerCase();
+      if (key === 'watering' || key === 'flowerwatering' || key === 'flower_watering') {
+        found.add('watering');
+      } else if (key === 'poop' || key === 'dogpoop' || key === 'dog_poop' || key === 'dogpooppickup') {
+        found.add('poop');
+      }
+    }
+  }
+
+  // Boolean flags (weekly.html sends these alongside extras[])
+  if (body.flowerWatering === true || body.flowerWatering === 'true' || body.flower_watering === true) {
+    found.add('watering');
+  }
+  if (body.dogPoopPickup === true || body.dogPoopPickup === 'true' || body.dog_poop_pickup === true) {
+    found.add('poop');
+  }
+
+  // Stable order for metadata / line_items
+  const ordered = [];
+  if (found.has('watering')) ordered.push('watering');
+  if (found.has('poop')) ordered.push('poop');
+  return ordered;
 }
 
 async function createOneTimeSession(stripe, body, origin) {
@@ -326,6 +382,8 @@ async function createWeeklySession(stripe, body, origin) {
   const serviceLabel = SERVICE_LABELS[serviceType];
   const tipDollars = resolveWeeklyTipDollars(body);
   const tipCents = Math.round(tipDollars * 100);
+  const extras = resolveWeeklyExtras(body);
+  const extrasMeta = extras.length ? extras.join(',') : 'none';
 
   const metadata = {
     formType: 'weekly',
@@ -339,15 +397,31 @@ async function createWeeklySession(stripe, body, origin) {
     serviceType: serviceType,
     serviceLabel: serviceLabel,
     tipAmount: tipDollars > 0 ? `$${tipDollars.toFixed(2)}/week` : 'none',
+    extras: extrasMeta.slice(0, 500),
   };
 
-  // Subscription Checkout: main weekly plan + optional weekly tip
+  // Subscription Checkout: main weekly plan + optional weekly extras + optional tip
+  // All recurring items must be weekly interval only (never one-time Price IDs).
   const lineItems = [
     {
       price: mainPriceId,
       quantity: 1,
     },
   ];
+
+  // Optional weekly extras (server Price IDs only — never trust client Price IDs)
+  if (extras.includes('watering')) {
+    lineItems.push({
+      price: PRICE_IDS.watering_weekly,
+      quantity: 1,
+    });
+  }
+  if (extras.includes('poop')) {
+    lineItems.push({
+      price: PRICE_IDS.poop_weekly,
+      quantity: 1,
+    });
+  }
 
   // Optional tip as matching weekly recurring price_data (avoids mixed intervals)
   if (tipCents > 0) {

@@ -7,8 +7,8 @@
     Post one-time-mow thank-you + weekly upsell page.
     Written in Bromley’s first-person voice.
     Customers land here after a completed one-time service.
-    Flow: Formspree emails Ryan the weekly signup details.
-    Stripe subscription checkout can be wired later — see comment on the CTA button.
+    Flow: Formspree soft-fail notify → POST /api/create-checkout-session
+    (mode: subscription) → Stripe Checkout → thank-you.html?type=weekly.
   -->
   <meta name="description" content="Thanks for letting me mow your lawn. Switch to a simple weekly mow with me, Bromley — cancel anytime.">
   <meta name="robots" content="noindex">
@@ -44,11 +44,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     body { font-family: Inter, system-ui, sans-serif; color: #1f2937; }
-    /* Custom radio cards (matches book.html patterns) */
+    /* Custom radio / checkbox cards (matches book.html patterns) */
     .day-option input:checked + label,
     .clip-option input:checked + label,
     .tip-option input:checked + label,
-    .plan-option input:checked + label {
+    .plan-option input:checked + label,
+    .extra-option input:checked + label {
       border-color: #22c55e;
       background-color: #dcfce7;
       box-shadow: 0 0 0 1px #22c55e;
@@ -130,8 +131,8 @@
 
       <!--
         ========== WEEKLY SIGNUP FORM ==========
-        Submits to Formspree (same endpoint as book.html) so Ryan gets an email.
-        Stripe subscription checkout can be added later (see CTA comment).
+        Soft-fail Formspree notify (email Ryan), then Stripe subscription Checkout
+        via /api/create-checkout-session (formType: weekly). See CTA script below.
       -->
       <form id="weekly-form" class="mt-12 space-y-10" novalidate>
 
@@ -421,12 +422,81 @@
           </div>
         </section>
 
+        <!-- ========== OPTIONAL WEEKLY EXTRAS ========== -->
+        <!--
+          Weekly extra Price IDs live on the server only (api/create-checkout-session.js).
+          Frontend sends extras keys ('watering' | 'poop'); server maps to:
+            watering_weekly: price_1TuzSfIwpXk8ife0bbpe9ms1  ($7/week)
+            poop_weekly:     price_1TuzR9IwpXk8ife0g0quOcHS  ($15/week)
+          Do NOT use one-time flowerWatering / dogPoopPickup Price IDs on this path.
+        -->
+        <section aria-labelledby="weekly-extras-heading">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-wider text-brand-green">Add-ons</p>
+            <h2 id="weekly-extras-heading" class="mt-2 text-lg font-bold text-brand-charcoal sm:text-xl">
+              Optional weekly extras
+            </h2>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
+              Want a little extra help each week? Completely optional — just tap what you’d like.
+            </p>
+          </div>
+          <div class="mt-5 grid gap-3 sm:grid-cols-2">
+            <!-- Flower Watering – $7/week -->
+            <div class="extra-option">
+              <input
+                type="checkbox"
+                id="extra-watering"
+                name="extra_watering"
+                value="watering"
+                class="sr-only"
+              >
+              <label
+                for="extra-watering"
+                class="flex h-full cursor-pointer flex-col rounded-xl border-2 border-gray-200 bg-white px-5 py-5 transition hover:border-brand-green/50"
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <span class="text-base font-bold text-brand-charcoal">Flower Watering</span>
+                  <span class="shrink-0 text-sm font-bold text-brand-charcoal">$7<span class="font-medium text-gray-500">/week</span></span>
+                </div>
+                <p class="mt-2 text-sm leading-relaxed text-gray-600">
+                  I’ll water your flowers every other day.
+                </p>
+                <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-brand-green">Tap to add</p>
+              </label>
+            </div>
+            <!-- Dog Poop Pickup – $15/week -->
+            <div class="extra-option">
+              <input
+                type="checkbox"
+                id="extra-poop"
+                name="extra_poop"
+                value="poop"
+                class="sr-only"
+              >
+              <label
+                for="extra-poop"
+                class="flex h-full cursor-pointer flex-col rounded-xl border-2 border-gray-200 bg-white px-5 py-5 transition hover:border-brand-green/50"
+              >
+                <div class="flex items-start justify-between gap-3">
+                  <span class="text-base font-bold text-brand-charcoal">Dog Poop Pickup</span>
+                  <span class="shrink-0 text-sm font-bold text-brand-charcoal">$15<span class="font-medium text-gray-500">/week</span></span>
+                </div>
+                <p class="mt-2 text-sm leading-relaxed text-gray-600">
+                  I’ll scoop the yard so you don’t have to.
+                </p>
+                <p class="mt-3 text-xs font-semibold uppercase tracking-wide text-brand-green">Tap to add</p>
+              </label>
+            </div>
+          </div>
+        </section>
+
         <!-- ========== OPTIONAL WEEKLY TIP (last before CTA) ========== -->
         <!--
-          Weekly tip Price IDs (for Stripe subscription line items later):
-          - $3/week tip: price_1TuyPCIwpXk8ife0X7ncoRfK
-          - $5/week tip: price_1TuyPaIwpXk8ife07WXDaaJx
-          TODO: Include selected tip Price ID when creating the subscription Checkout Session
+          Tip amount is sent as tipAmount dollars; the server bills tips via weekly
+          price_data (recurring.interval = week). Display Price IDs on radios are
+          aliases only — charging uses server-side resolution, not client Price IDs.
+            $3/week tip: price_1TuyPCIwpXk8ife0X7ncoRfK
+            $5/week tip: price_1TuyPaIwpXk8ife07WXDaaJx
         -->
         <section aria-labelledby="weekly-tip-heading">
           <fieldset>
@@ -475,18 +545,12 @@
           <!--
             ========== STRIPE SUBSCRIPTION CHECKOUT ==========
             This button:
-              1) Reads the selected plan card (weekly_plan radio + data-price-id)
-              2) POSTs signup details to Formspree (email Ryan)
+              1) Reads the selected plan card + optional extras + tip
+              2) Soft-fail POSTs signup details to Formspree (email Ryan)
               3) POSTs to /api/create-checkout-session with formType: 'weekly'
-                 which creates a Stripe Checkout Session in mode: 'subscription'
-                 using the correct Price ID for the selected plan:
-
-                   Basic Weekly Mow:        price_1TuxzEIwpXk8ife0iLcI5L4R  ($18/week)
-                   Full Service Weekly Mow: price_1TuxyXIwpXk8ife0gx9HvW6T  ($20/week)
-
-                 Optional tip line items (if selected):
-                   $3/week tip: price_1TuyPCIwpXk8ife0X7ncoRfK
-                   $5/week tip: price_1TuyPaIwpXk8ife07WXDaaJx
+                 which creates a Stripe Checkout Session in mode: 'subscription'.
+                 Server maps serviceType / extras / tip — client Price IDs are
+                 display aliases only and are never trusted for charging.
 
               4) Redirects to Stripe Checkout; on success Stripe sends the customer
                  to /thank-you.html?session_id={CHECKOUT_SESSION_ID}&type=weekly
@@ -532,14 +596,14 @@
   <script>
     /*
      * ========== WEEKLY SIGNUP FLOW ==========
-     * 1) Customer selects a plan card (basic or full)
-     * 2) Validate form fields
-     * 3) POST to Formspree (same endpoint as book.html) so Ryan gets an email
+     * 1) Customer selects a plan card (basic or full) + optional extras/tip
+     * 2) Validate form fields (plan + required contact/prefs)
+     * 3) Soft-fail POST to Formspree so Ryan gets an email
      * 4) POST to /api/create-checkout-session (formType: 'weekly') → Stripe
-     *    subscription Checkout Session for the selected plan Price ID
-     * 5) Redirect browser to Stripe; success_url → thank-you.html
+     *    subscription Checkout (plan + weekly extras + tip via price_data)
+     * 5) Redirect browser to Stripe; success_url → thank-you.html?type=weekly
      *
-     * This page never uses the Stripe secret key.
+     * This page never uses the Stripe secret key. Server owns all Price IDs.
      */
     const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdarqrky';
     const CHECKOUT_API = '/api/create-checkout-session';
@@ -607,10 +671,35 @@
       return form ? form.querySelector('input[name="weekly_plan"]:checked') : null;
     }
 
+    /** Selected weekly extras keys: 'watering' and/or 'poop' (default none). */
+    function getSelectedExtras() {
+      const extras = [];
+      const watering = document.getElementById('extra-watering');
+      const poop = document.getElementById('extra-poop');
+      if (watering && watering.checked) extras.push('watering');
+      if (poop && poop.checked) extras.push('poop');
+      return extras;
+    }
+
+    /** Human-readable extras list for Formspree email. */
+    function formatExtrasLabel(extras) {
+      if (!extras || !extras.length) return 'none';
+      const labels = {
+        watering: 'Flower Watering ($7/week)',
+        poop: 'Dog Poop Pickup ($15/week)',
+      };
+      return extras
+        .map(function (key) {
+          return labels[key] || key;
+        })
+        .join(', ');
+    }
+
     /**
      * Collect form data for Formspree + Stripe API.
      * Field names match what /api/create-checkout-session expects for weekly mode,
      * plus aliases used in the Formspree email.
+     * Price IDs on radios are display aliases only — server maps charging Prices.
      */
     function collectPayload() {
       const day = form.querySelector('input[name="preferred_day"]:checked');
@@ -637,6 +726,10 @@
       const notes = (document.getElementById('notes') || {}).value || '';
       const preferredDay = day ? day.value : '';
 
+      const extras = getSelectedExtras();
+      const flowerWatering = extras.indexOf('watering') !== -1;
+      const dogPoopPickup = extras.indexOf('poop') !== -1;
+
       return {
         // API-shaped fields (create-checkout-session weekly branch)
         formType: 'weekly',
@@ -650,6 +743,9 @@
         serviceType: plan, // 'basic' | 'full' → resolved to *_weekly on server
         tipAmount: tipAmount,
         tipPriceId: tipPriceId,
+        extras: extras,
+        flowerWatering: flowerWatering,
+        dogPoopPickup: dogPoopPickup,
         // Formspree / display aliases
         full_name: name,
         service_address: address,
@@ -660,6 +756,7 @@
         stripe_price_id: priceId,
         weekly_tip: tipAmount > 0 ? '$' + tipAmount + '/week' : 'none',
         tip_price_id: tipPriceId,
+        weekly_extras: formatExtrasLabel(extras),
       };
     }
 
@@ -723,6 +820,10 @@
       data.append('stripe_price_id', payload.stripe_price_id);
       data.append('weekly_tip', payload.weekly_tip);
       data.append('tip_price_id', payload.tip_price_id || '');
+      data.append('weekly_extras', payload.weekly_extras || 'none');
+      data.append('extras', Array.isArray(payload.extras) ? payload.extras.join(',') : '');
+      data.append('flower_watering', payload.flowerWatering ? 'yes' : 'no');
+      data.append('dog_poop_pickup', payload.dogPoopPickup ? 'yes' : 'no');
       return data;
     }
 
