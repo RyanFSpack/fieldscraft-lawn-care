@@ -620,6 +620,19 @@
     const clipOtherWrap = document.getElementById('clippings-other-wrap');
     const clipOtherInput = document.getElementById('clippings-other');
 
+    // Pre-select plan from ?plan=basic|full (homepage deep links). Checkout/Formspree unchanged.
+    (function preselectPlanFromQuery() {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var plan = String(params.get('plan') || '').trim().toLowerCase();
+        if (plan !== 'basic' && plan !== 'full') return;
+        var radio = document.getElementById(plan === 'full' ? 'plan-full' : 'plan-basic');
+        if (radio) radio.checked = true;
+      } catch (err) {
+        /* ignore — default plan card stays selected */
+      }
+    })();
+
     // Show "other" clippings detail field when needed
     document.querySelectorAll('input[name="lawn_clippings"]').forEach(function (radio) {
       radio.addEventListener('change', function () {

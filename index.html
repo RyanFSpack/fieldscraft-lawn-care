@@ -152,64 +152,162 @@
           <h2 id="services" class="mt-2 scroll-mt-24 text-3xl font-bold tracking-tight text-brand-charcoal sm:text-4xl">
             Simple, Transparent Pricing
           </h2>
-          <p class="mt-3 text-gray-600">No surprises — just neat, careful work at a fair neighborhood rate.</p>
+          <p class="mt-3 text-gray-600">
+            Book a one-time visit, or start weekly service anytime — no surprises, just neat, careful work.
+          </p>
         </div>
 
-        <div class="mx-auto mt-12 grid max-w-4xl gap-6 sm:grid-cols-2">
-          <!-- Basic Mow card -->
-          <article class="flex flex-col rounded-2xl border border-gray-100 bg-white p-7 shadow-card ring-1 ring-gray-50 transition hover:shadow-soft">
-            <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green-light text-brand-green" aria-hidden="true">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-1.5 4-3 7-6 10h12c-3-3-4.5-6-6-10zM6 20h12"/>
-              </svg>
-            </div>
-            <h3 class="text-xl font-bold text-brand-charcoal">Basic Mow</h3>
-            <p class="mt-1 text-sm text-gray-500">Mowing only</p>
-            <p class="mt-5">
-              <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$18</span>
-              <span class="text-sm font-medium text-gray-500"> / visit</span>
-            </p>
-            <ul class="mt-5 flex-1 space-y-2.5 text-sm text-gray-600">
-              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Full lawn mowed evenly</li>
-              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Clean, professional finish</li>
-              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Perfect for regular upkeep</li>
-            </ul>
-            <a
-              href="book.html?service=basic"
-              class="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-5 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
-            >
-              Book Now
-            </a>
-          </article>
+        <!-- ---- One-time path ---- -->
+        <div class="mx-auto mt-12 max-w-4xl">
+          <div class="mb-5 text-center sm:text-left">
+            <h3 class="text-lg font-bold text-brand-charcoal sm:text-xl">One-time visit</h3>
+            <p class="mt-1 text-sm text-gray-500">Perfect if you just need a mow once.</p>
+          </div>
+          <div class="grid gap-6 sm:grid-cols-2">
+            <!-- Basic Mow card -->
+            <article class="flex flex-col rounded-2xl border border-gray-100 bg-white p-7 shadow-card ring-1 ring-gray-50 transition hover:shadow-soft">
+              <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green-light text-brand-green" aria-hidden="true">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-1.5 4-3 7-6 10h12c-3-3-4.5-6-6-10zM6 20h12"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-brand-charcoal">Basic Mow</h3>
+              <p class="mt-1 text-sm text-gray-500">Mowing only</p>
+              <p class="mt-5">
+                <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$18</span>
+                <span class="text-sm font-medium text-gray-500"> / visit</span>
+              </p>
+              <ul class="mt-5 flex-1 space-y-2.5 text-sm text-gray-600">
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Full lawn mowed evenly</li>
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Clean, professional finish</li>
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Perfect for a single visit</li>
+              </ul>
+              <a
+                href="book.html?service=basic"
+                class="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-5 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
+              >
+                Book One-Time
+              </a>
+            </article>
 
-          <!-- Full Yard Service card -->
-          <article class="relative flex flex-col rounded-2xl border-2 border-brand-green bg-white p-7 shadow-soft">
-            <span class="absolute -top-3 right-5 rounded-full bg-brand-gold px-3 py-0.5 text-xs font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
-              Most Popular
-            </span>
-            <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green text-white" aria-hidden="true">
-              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+            <!-- Full Yard Service card -->
+            <article class="relative flex flex-col rounded-2xl border-2 border-brand-green bg-white p-7 shadow-soft">
+              <span class="absolute -top-3 right-5 rounded-full bg-brand-gold px-3 py-0.5 text-xs font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
+                Most Popular
+              </span>
+              <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green text-white" aria-hidden="true">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-brand-charcoal">Full Yard Service</h3>
+              <p class="mt-1 text-sm text-gray-500">Mowing + Trimming along borders + Blowing</p>
+              <p class="mt-5">
+                <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$25</span>
+                <span class="text-sm font-medium text-gray-500"> / visit</span>
+              </p>
+              <ul class="mt-5 flex-1 space-y-2.5 text-sm text-gray-600">
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Everything in Basic Mow</li>
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Trimming along borders</li>
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Blow off walkways &amp; driveways</li>
+              </ul>
+              <a
+                href="book.html?service=full"
+                class="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-5 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
+              >
+                Book One-Time
+              </a>
+            </article>
+          </div>
+        </div>
+
+        <!-- ---- Weekly path ---- -->
+        <div class="mx-auto mt-14 max-w-4xl">
+          <div class="mb-5 text-center sm:text-left">
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
+              <h3 class="text-lg font-bold text-brand-charcoal sm:text-xl">Weekly service</h3>
+              <span class="rounded-full bg-brand-gold px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
+                Best Value
+              </span>
+            </div>
+            <p class="mt-1 text-sm text-gray-500">
+              Never rebook — Bromley comes back every week. Available to anyone, not just after a one-time mow.
+            </p>
+          </div>
+
+          <!-- Strong cancel-anytime messaging -->
+          <div class="mb-6 flex items-start gap-3 rounded-xl border border-brand-green/25 bg-brand-green-light/60 px-4 py-3.5 sm:items-center">
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-green text-white" aria-hidden="true">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
               </svg>
-            </div>
-            <h3 class="text-xl font-bold text-brand-charcoal">Full Yard Service</h3>
-            <p class="mt-1 text-sm text-gray-500">Mowing + Trimming along borders + Blowing</p>
-            <p class="mt-5">
-              <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$25</span>
-              <span class="text-sm font-medium text-gray-500"> / visit</span>
+            </span>
+            <p class="text-sm font-semibold leading-snug text-brand-charcoal sm:text-base">
+              Cancel anytime — no contracts, no hassle. Pause or stop whenever you need.
             </p>
-            <ul class="mt-5 flex-1 space-y-2.5 text-sm text-gray-600">
-              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Everything in Basic Mow</li>
-              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Trimming along borders</li>
-              <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Blow off walkways &amp; driveways</li>
-            </ul>
-            <a
-              href="book.html?service=full"
-              class="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-5 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
-            >
-              Book Now
-            </a>
-          </article>
+          </div>
+
+          <div class="grid gap-6 sm:grid-cols-2">
+            <!-- Basic Weekly -->
+            <article class="flex flex-col rounded-2xl border border-gray-100 bg-white p-7 shadow-card ring-1 ring-gray-50 transition hover:shadow-soft">
+              <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green-light text-brand-green" aria-hidden="true">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-1.5 4-3 7-6 10h12c-3-3-4.5-6-6-10zM6 20h12"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-brand-charcoal">Basic Weekly Mow</h3>
+              <p class="mt-1 text-sm text-gray-500">Mowing only · every week</p>
+              <p class="mt-5">
+                <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$18</span>
+                <span class="text-sm font-medium text-gray-500"> / week</span>
+              </p>
+              <ul class="mt-5 flex-1 space-y-2.5 text-sm text-gray-600">
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Full lawn mowed evenly each week</li>
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Same great rate, every week</li>
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Cancel anytime</li>
+              </ul>
+              <a
+                href="weekly.html?plan=basic"
+                class="mt-7 inline-flex w-full items-center justify-center rounded-xl border-2 border-brand-green bg-white px-5 py-3.5 text-center text-sm font-semibold text-brand-green transition hover:bg-brand-green-light focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
+              >
+                Start Weekly – $18/wk
+              </a>
+            </article>
+
+            <!-- Full Service Weekly -->
+            <article class="relative flex flex-col rounded-2xl border-2 border-brand-green bg-white p-7 shadow-soft">
+              <span class="absolute -top-3 right-5 rounded-full bg-brand-gold px-3 py-0.5 text-xs font-bold uppercase tracking-wide text-brand-charcoal shadow-sm">
+                Save $5
+              </span>
+              <div class="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-green text-white" aria-hidden="true">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-brand-charcoal">Full Service Weekly</h3>
+              <p class="mt-1 text-sm text-gray-500">Mow + trim + blow · every week</p>
+              <p class="mt-5 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+                <span class="text-xl font-semibold text-gray-400 line-through decoration-2" aria-hidden="true">$25</span>
+                <span class="sr-only">One-time price $25 per visit, weekly rate</span>
+                <span class="text-4xl font-extrabold tracking-tight text-brand-charcoal">$20</span>
+                <span class="text-sm font-medium text-gray-500"> / week</span>
+              </p>
+              <p class="mt-1.5 text-xs font-semibold uppercase tracking-wide text-brand-green">
+                Weekly deal — save $5 vs one-time
+              </p>
+              <ul class="mt-5 flex-1 space-y-2.5 text-sm text-gray-600">
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Everything in Basic Weekly</li>
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Trim borders + blow walkways</li>
+                <li class="flex gap-2"><span class="mt-0.5 text-brand-green" aria-hidden="true">✓</span> Cancel anytime</li>
+              </ul>
+              <a
+                href="weekly.html?plan=full"
+                class="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-5 py-3.5 text-center text-sm font-semibold text-white shadow-sm transition hover:bg-brand-green-dark focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2"
+              >
+                Start Weekly – $20/wk
+              </a>
+            </article>
+          </div>
         </div>
       </div>
     </section>
@@ -432,9 +530,9 @@
           Ready for a cleaner, greener yard?
         </h2>
         <p class="mx-auto mt-3 max-w-xl text-gray-300">
-          Book a Basic Mow or Full Yard Service today — neighbors in Kechter Farm are always welcome.
+          Book a one-time visit or start weekly service today — neighbors in Kechter Farm are always welcome.
         </p>
-        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
           <a
             href="book.html?service=basic"
             class="inline-flex w-full items-center justify-center rounded-xl bg-brand-green px-6 py-3.5 text-base font-semibold text-white transition hover:bg-brand-green-dark sm:w-auto"
@@ -447,7 +545,16 @@
           >
             Book Full Yard Service – $25
           </a>
+          <a
+            href="weekly.html?plan=full"
+            class="inline-flex w-full items-center justify-center rounded-xl border-2 border-brand-green bg-transparent px-6 py-3.5 text-base font-semibold text-brand-green transition hover:bg-brand-green/10 sm:w-auto"
+          >
+            Start Weekly – from $18/wk
+          </a>
         </div>
+        <p class="mt-4 text-sm text-gray-400">
+          Weekly plans · cancel anytime
+        </p>
       </div>
     </section>
   </main>
