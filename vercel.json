@@ -1,9 +1,14 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/create-checkout-session",
       "destination": "/api/create-checkout-session.js"
+    },
+    {
+      "source": "/api/create-fall-checkout",
+      "destination": "/api/create-fall-checkout.js"
     }
   ]
 }

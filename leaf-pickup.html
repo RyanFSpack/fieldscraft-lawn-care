@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fall leaf pickup in Kechter Farm. $40 a visit. Bromley bags leaves into your yard-waste bin. Nothing hauled away.">
+  <title>Leaf Pickup $40 | FieldsCraft Lawn Care</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#1f6b45',
+              'green-dark': '#164e32',
+              charcoal: '#1f2937',
+              cream: '#fbf6ee',
+              pumpkin: '#c2410c',
+              amber: '#d97706',
+            }
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; color: #1f2937; overflow-x: hidden; }
+    h1, p, li, label, button, a { overflow-wrap: anywhere; }
+    input, select, textarea { font-size: 16px; }
+  </style>
+</head>
+<body class="bg-brand-cream text-brand-charcoal antialiased">
+
+  <header class="sticky top-0 z-50 border-b border-amber-200/80 bg-white/95 backdrop-blur-md">
+    <div class="mx-auto flex max-w-lg items-center justify-between gap-3 px-4 py-3">
+      <a href="index.html" class="flex items-center gap-2.5">
+        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-green text-white" aria-hidden="true">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none">
+            <path d="M6 20c1.5-4 2-8 1-14 3 3 4 7 4 11" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+            <path d="M12 20c.8-3.5 1.2-7 .5-12 2.5 2.5 3.5 6 3.5 10" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+            <path d="M4 20h16" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="text-lg font-bold tracking-tight">FieldsCraft</span>
+      </a>
+      <a href="tel:+13039068597" class="text-sm font-semibold text-brand-green">303.906.8597</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-lg px-4 pb-16 pt-6">
+    <p class="text-xs font-bold uppercase tracking-widest text-amber-800">Fall Fest · leaves</p>
+    <h1 class="mt-2 text-[1.7rem] font-extrabold leading-tight tracking-tight sm:text-3xl">Leaf pickup, into your bin</h1>
+    <p class="mt-3 text-4xl font-extrabold text-brand-pumpkin">$40 <span class="text-lg font-semibold text-gray-600">per visit</span></p>
+
+    <div class="mt-4 overflow-hidden rounded-2xl ring-1 ring-amber-200">
+      <img
+        src="images/hero-bromley.jpg"
+        alt="Bromley, who will bag the leaves"
+        class="aspect-[16/9] w-full object-cover object-[center_28%]"
+        width="800"
+        height="450"
+      >
+    </div>
+
+    <p class="mt-4 text-base leading-snug text-gray-800">
+      I’m Bromley. I mow and bag the leaves into <strong>your</strong> yard-waste bin. That’s the whole job.
+    </p>
+
+    <div class="mt-4 grid grid-cols-1 gap-2 text-sm">
+      <p class="rounded-xl bg-white px-4 py-3 ring-1 ring-amber-200"><strong>What it is.</strong> Leaves mowed and bagged into the bin you already have, at the curb or on site.</p>
+      <p class="rounded-xl bg-amber-50 px-4 py-3 ring-1 ring-amber-200"><strong>What it is not.</strong> Nothing is hauled away. No trailer dump. No bin, no pickup.</p>
+    </div>
+
+    <form id="leaf-form" class="mt-6 space-y-4" novalidate>
+      <div>
+        <label for="name" class="mb-1.5 block text-sm font-semibold">Name</label>
+        <input id="name" name="name" required autocomplete="name" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2">
+      </div>
+      <div>
+        <label for="phone" class="mb-1.5 block text-sm font-semibold">Phone</label>
+        <input id="phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2">
+      </div>
+      <div>
+        <label for="email" class="mb-1.5 block text-sm font-semibold">Email</label>
+        <input id="email" name="email" type="email" required autocomplete="email" inputmode="email" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2" placeholder="For your Stripe receipt">
+      </div>
+      <div>
+        <label for="address" class="mb-1.5 block text-sm font-semibold">Street address</label>
+        <input id="address" name="address" required autocomplete="street-address" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2" placeholder="Kechter Farm, Fort Collins">
+      </div>
+
+      <label class="flex items-start gap-3 rounded-xl bg-white px-4 py-3.5 ring-1 ring-amber-200">
+        <input id="bin" name="bin_confirmed" type="checkbox" required class="mt-1 h-5 w-5 shrink-0 accent-brand-green">
+        <span class="text-sm leading-snug">I have a yard-waste bin at the curb or on site, and Bromley may empty leaves into that bin only.</span>
+      </label>
+
+      <div>
+        <label for="week" class="mb-1.5 block text-sm font-semibold">Preferred week</label>
+        <select id="week" name="preferred_week" required class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2">
+          <option value="">Choose one</option>
+          <option value="as_soon_as_you_can">As soon as you can</option>
+          <option value="week_of_oct_12">Week of Oct 12</option>
+          <option value="week_of_oct_19">Week of Oct 19</option>
+          <option value="week_of_oct_26">Week of Oct 26</option>
+          <option value="week_of_nov_2">Week of Nov 2</option>
+          <option value="week_of_nov_9">Week of Nov 9</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="notes" class="mb-1.5 block text-sm font-semibold">Notes <span class="font-normal text-gray-500">(optional)</span></label>
+        <textarea id="notes" name="notes" rows="3" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2" placeholder="Gate, pets, where the bin is"></textarea>
+      </div>
+
+      <label class="flex items-start gap-3 rounded-xl bg-white px-4 py-3.5 ring-1 ring-amber-200">
+        <input id="consent" name="consent" type="checkbox" required class="mt-1 h-5 w-5 shrink-0 accent-brand-green">
+        <span class="text-sm leading-snug">OK to text me to confirm the day.</span>
+      </label>
+
+      <p id="form-error" class="hidden rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800 ring-1 ring-red-200" role="alert"></p>
+
+      <button id="submit-btn" type="submit" class="inline-flex min-h-14 w-full items-center justify-center rounded-xl bg-brand-pumpkin px-5 py-4 text-lg font-bold text-white shadow-sm hover:bg-orange-800 focus:outline-none focus:ring-2 focus:ring-brand-pumpkin focus:ring-offset-2 disabled:opacity-70">
+        Book leaf pickup — $40
+      </button>
+      <p class="text-center text-xs text-gray-500">Stripe only. Ryan texts from 303.906.8597 to confirm the day.</p>
+    </form>
+  </main>
+
+  <footer class="border-t border-amber-200/80 bg-white">
+    <div class="mx-auto max-w-lg px-4 py-8 text-sm text-gray-500">
+      <p class="font-bold text-brand-charcoal">FieldsCraft Lawn Care</p>
+      <p class="mt-1">Kechter Farm, Fort Collins · <a class="text-brand-green" href="tel:+13039068597">303.906.8597</a></p>
+      <p class="mt-3"><a class="hover:text-brand-green" href="index.html">Home</a> · <a class="hover:text-brand-green" href="fair-promo.html">Spring lock-in</a></p>
+      <p class="mt-4 text-xs text-gray-400">&copy; <span id="year"></span> FieldsCraft Lawn Care</p>
+    </div>
+  </footer>
+
+  <script>
+    /*
+     * TODO (Ryan): paste a dedicated Formspree endpoint here for a clean CSV.
+     * Until then this posts to the booking form with form_type=leaf_pickup.
+     *
+     * CSV fields: timestamp, name, phone, email, address, offer, plan,
+     * deposit_status, bin_confirmed, notes, stripe_session_id,
+     * form_type, neighborhood_flag, source, consent, preferred_week
+     */
+    var FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdarqrky';
+    var CHECKOUT_API = '/api/create-fall-checkout';
+    var form = document.getElementById('leaf-form');
+    var errorEl = document.getElementById('form-error');
+    var submitBtn = document.getElementById('submit-btn');
+    var yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+      errorEl.scrollIntoView({ block: 'nearest' });
+    }
+
+    function looksOutside(address) {
+      var text = String(address || '').toLowerCase();
+      var zip = text.match(/\b(\d{5})(?:-\d{4})?\b/);
+      var zipOk = !zip || /^(8052[1-8]|80553)$/.test(zip[1]);
+      var otherCity = /\b(loveland|windsor|timnath|greeley|denver|boulder|longmont|berthoud|johnstown|severance|wellington)\b/.test(text);
+      var local = /kechter|cinque\s?foil|jupiter|ziegler|strauss|harmony|amber harvest|twin silo|zach/.test(text);
+      return !zipOk || otherCity || !local;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      errorEl.classList.add('hidden');
+
+      var bin = document.getElementById('bin');
+      if (!bin.checked) {
+        showError('Check the yard-waste bin box. Leaves go in your bin only — we don’t haul them away.');
+        bin.focus();
+        return;
+      }
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        showError('Add your name, phone, email, address, week, bin checkbox, and text consent.');
+        return;
+      }
+
+      var address = document.getElementById('address').value.trim();
+      var outside = looksOutside(address);
+      var notes = document.getElementById('notes').value.trim();
+      var week = document.getElementById('week').value;
+      var lead = {
+        timestamp: new Date().toISOString(),
+        name: document.getElementById('name').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        address: address,
+        offer: 'leaf_pickup',
+        plan: '',
+        deposit_status: 'pending_stripe',
+        bin_confirmed: 'yes',
+        notes: notes,
+        stripe_session_id: '',
+        form_type: 'leaf_pickup',
+        neighborhood_flag: outside ? 'outside_or_unconfirmed' : 'kechter_farm',
+        source: 'fall_fest_2026',
+        consent: 'yes',
+        preferred_week: week
+      };
+      if (outside) {
+        lead.notes = (notes ? notes + ' | ' : '') + 'neighborhood_flag=outside_or_unconfirmed';
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving your request…';
+
+      fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(lead)
+      }).then(function (res) {
+        if (!res.ok) throw new Error('Formspree ' + res.status);
+      }).catch(function (err) {
+        console.error('Formspree error (continuing to Stripe):', err);
+      }).then(function () {
+        submitBtn.textContent = 'Opening secure checkout…';
+        return fetch(CHECKOUT_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            offer: 'leaf_pickup',
+            name: lead.name,
+            phone: lead.phone,
+            email: lead.email,
+            address: lead.address,
+            preferredWeek: week,
+            notes: notes,
+            binConfirmed: true,
+            consent: true,
+            source: 'fall_fest_2026'
+          })
+        });
+      }).then(function (res) {
+        if (!res) return;
+        return res.json().catch(function () { return {}; }).then(function (body) {
+          if (!res.ok || !body.url) {
+            throw new Error((body && body.error) || 'Could not start checkout. Text Ryan at 303.906.8597.');
+          }
+          window.location.href = body.url;
+        });
+      }).catch(function (err) {
+        console.error(err);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Book leaf pickup — $40';
+        showError((err && err.message) || 'Something went wrong. Text Ryan at 303.906.8597.');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="description" content="You’re locked in for FieldsCraft’s Spring 2027 starter, or you’re on the March text list.">
+  <title>You’re on the list | FieldsCraft Lawn Care</title>
+  <script>
+    /* Run before paint so a notify-me visitor never sees the paid confirmation. */
+    (function () {
+      var notify = /(?:\?|&)mode=notify(?:&|$)/.test(location.search);
+      document.documentElement.classList.add(notify ? 'is-notify' : 'is-paid');
+      document.title = notify
+        ? 'You’re on the spring list | FieldsCraft Lawn Care'
+        : 'You’re locked in | FieldsCraft Lawn Care';
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#1f6b45',
+              charcoal: '#1f2937',
+              cream: '#fbf6ee',
+              pumpkin: '#c2410c',
+            }
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, system-ui, sans-serif; }
+    .paid-only, .notify-only { display: none; }
+    html.is-paid .paid-only { display: block; }
+    html.is-notify .notify-only { display: block; }
+  </style>
+</head>
+<body class="bg-brand-cream text-brand-charcoal antialiased">
+  <header class="border-b border-amber-200/80 bg-white">
+    <div class="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
+      <a href="index.html" class="text-lg font-bold">FieldsCraft</a>
+      <a href="tel:+13039068597" class="text-sm font-semibold text-brand-green">303.906.8597</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-lg px-4 py-10">
+    <div class="paid-only">
+      <p class="text-xs font-bold uppercase tracking-widest text-brand-pumpkin">Fall Fest</p>
+      <h1 class="mt-2 text-3xl font-extrabold leading-tight">You’re locked in.</h1>
+      <p class="mt-4 text-lg leading-snug text-gray-800">
+        $30 received. We’ll text you in March before anything else is charged. Questions: 303.906.8597.
+      </p>
+      <!--
+        SPRING CHARGE — what Ryan does, also documented in api/create-fall-checkout.js.
+        Nothing else is charged silently on a hidden date.
+      -->
+      <ol class="mt-6 space-y-3 rounded-2xl bg-white p-5 text-sm leading-snug ring-1 ring-amber-200">
+        <li><strong>March 2027.</strong> Ryan texts to confirm you still live there and to pick a day.</li>
+        <li><strong>When mowing starts</strong> (late April 2027 target; weather may push to early May): the remaining $30 is charged once, then weekly at the plan you picked. No specific April day is promised.</li>
+        <li><strong>If you moved and told us</strong> before we start, we refund the $30 and do not start billing. We will not guess.</li>
+        <li>Card-expiry emails come from Stripe. We still text before the first spring charge.</li>
+      </ol>
+      <p class="mt-6 text-sm text-gray-600">
+        Weekly billing does not start today. Cancel anytime after it does.
+      </p>
+    </div>
+
+    <div class="notify-only">
+      <p class="text-xs font-bold uppercase tracking-widest text-brand-pumpkin">Spring list</p>
+      <h1 class="mt-2 text-3xl font-extrabold leading-tight">You’re on the spring list.</h1>
+      <p class="mt-4 text-lg leading-snug text-gray-800">
+        No charge. We’ll text you in March.
+      </p>
+      <ul class="mt-6 space-y-3 rounded-2xl bg-white p-5 text-sm leading-snug ring-1 ring-amber-200">
+        <li>No card was charged. This does not hold one of the 10 spots.</li>
+        <li><strong>March 2027.</strong> Ryan texts to see if you still want spring mowing.</li>
+        <li>Questions: <a class="font-semibold text-brand-green" href="tel:+13039068597">303.906.8597</a></li>
+      </ul>
+    </div>
+
+    <noscript>
+      <p class="mt-4 text-lg leading-snug">
+        If you locked a spot, $30 was received. If you asked to be notified, there’s no charge.
+        We’ll text in March either way. Questions: 303.906.8597.
+      </p>
+    </noscript>
+
+    <a href="index.html" class="mt-8 inline-flex min-h-12 items-center font-semibold text-brand-green">Back to FieldsCraft</a>
+  </main>
+</body>
+</html>
