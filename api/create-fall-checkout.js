@@ -9,10 +9,9 @@
  * Two offers:
  *
  *  A) Spring 2027 starter lock-in  (fair-promo.html, offer=spring_starter)
- *     - $30 deposit charged TODAY (one-time).
- *     - Card + customer saved.
- *     - Weekly plan they picked is attached as a subscription with
- *       trial_end = 2027-04-20 16:00 UTC, so NOTHING weekly is charged today.
+ *     - $30 deposit charged TODAY (one-time). Nothing else.
+ *     - Customer is created and saved. Card is saved for the later $30.
+ *     - NO weekly subscription. Do not attach basic_weekly or full_weekly.
  *     - The other $30 is NOT charged today. Ryan charges that once, manually,
  *       when mowing actually starts (see SPRING CHARGE below).
  *
@@ -34,49 +33,29 @@
  *      lookup_key:    fall_leaf_pickup_bin
  *      Env override:  STRIPE_PRICE_LEAF_PICKUP
  *
- * Weekly plans already exist and are reused (not created here):
- *   Basic weekly $18:        price_1TuxzEIwpXk8ife0iLcI5L4R
- *   Full Service weekly $20: price_1TuxyXIwpXk8ife0gx9HvW6T
+ * Weekly plans are NOT part of this offer. Do not attach
+ * basic_weekly or full_weekly to a spring_starter Checkout Session.
+ * book.html and weekly.html still use /api/create-checkout-session.js.
  *
  * -----------------------------------------------------------------------------
- * HOW THE $30 + SAVED CARD + DELAYED WEEKLY START WORKS
+ * HOW THE $30 DEPOSIT + SAVED CUSTOMER WORKS
  * -----------------------------------------------------------------------------
- * Preferred path (implemented below):
- *   Checkout Session mode = 'subscription' with TWO line items:
- *     - one-time Price "Spring 2027 Starter Deposit" ($30)  → charged now
- *     - recurring weekly Price they picked                   → on trial
- *   subscription_data.trial_end = 2027-04-20 16:00 UTC.
- *   Stripe invoices the one-time price on the first invoice and does not
- *   bill the weekly price until the trial ends. The card is saved on the
- *   Customer because subscription Checkout always collects a payment method.
- *
- *   IMPORTANT — trial_end is a SAFETY NET, not the spring charge date.
- *   When the trial ends (~April 20, 2027, 10:00am America/Denver), Stripe
- *   will try to charge the WEEKLY plan ($18 or $20), not the remaining $30.
- *   Ryan must, before that date:
- *     1. Text in March 2027 to confirm they still live there and pick a day.
- *     2. If they moved and told us: refund the $30 deposit and cancel the
- *        subscription. Do not guess — they have to contact us.
- *     3. When mowing actually starts (target window late April 2027; weather
- *        may push this to early May — never promise a specific start date):
- *        charge the remaining $30 ONCE as a one-time invoice, then let weekly
- *        billing run at the plan they chose.
- *     4. If weather pushes the first mow past April 20, move trial_end (or
- *        pause the subscription) BEFORE April 20 so Stripe does not start
- *        weekly billing early. Card-expiry emails are Stripe’s. We still
- *        text before the first spring charge.
- *
- * Fallback (documented, not the default — used only if Stripe rejects the
- * mixed one-time + trial subscription session):
+ * spring_starter Checkout Session (implemented below):
  *   - mode: 'payment'
- *   - line item: $30 deposit only
- *   - payment_intent_data.setup_future_usage = 'off_session'
- *   - customer_creation = 'always' so the card is saved on a Customer
+ *   - one line item: one-time Price "Spring 2027 Starter Deposit" ($30)
+ *   - customer_creation: 'always' so the Customer is saved
+ *   - payment_intent_data.setup_future_usage = 'off_session' so the card
+ *     is saved on that Customer for the later $30
  *   - NO subscription is created
- *   - plan (basic|full) is stored in Session + Customer metadata
- *   - Ryan starts the weekly subscription himself in spring, after the
- *     March text and after charging the remaining $30.
- *   The response includes mode: 'payment_fallback' when this path runs.
+ *   - NO weekly price (basic_weekly / full_weekly) is attached
+ *
+ * Ryan, in spring:
+ *   1. Text in March 2027 to confirm they still live there and pick a day.
+ *   2. If they moved and told us: refund the $30 deposit. Do not guess —
+ *      they have to contact us.
+ *   3. When mowing actually starts (target window late April 2027; weather
+ *      may push this to early May — never promise a specific start date):
+ *      charge the remaining $30 ONCE as a one-time invoice.
  *
  * The remaining $30 is never a silent automatic charge. There is no Price
  * and no subscription item for it. Ryan charges it by hand when mowing starts.
@@ -84,19 +63,6 @@
  */
 
 const Stripe = require('stripe');
-
-const WEEKLY_PRICE_IDS = {
-  basic: 'price_1TuxzEIwpXk8ife0iLcI5L4R', // Basic Weekly Mow – $18/week
-  full: 'price_1TuxyXIwpXk8ife0gx9HvW6T', // Full Service Weekly Mow – $20/week
-};
-
-/**
- * Trial end for the spring starter subscription.
- * 2027-04-20 16:00 UTC = 10:00am America/Denver (MDT, UTC-6).
- * Must be > 48 hours in the future (Stripe rule). It is — this is Fall 2026.
- * This is NOT a promised mow date. See the header comment.
- */
-const SPRING_TRIAL_END_UNIX = Math.floor(Date.UTC(2027, 3, 20, 16, 0, 0) / 1000);
 
 const DEPOSIT_LOOKUP_KEY = 'spring_2027_starter_deposit';
 const LEAF_LOOKUP_KEY = 'fall_leaf_pickup_bin';
@@ -224,16 +190,15 @@ function springMetadata(fields) {
     phone: clip(fields.phone),
     email: clip(fields.email),
     address: clip(fields.address),
-    plan: fields.plan,
     offer: 'spring_starter',
     deposit: '30',
     neighborhood: 'kechter_farm',
     neighborhood_flag: fields.neighborhoodFlag,
     source: 'fall_fest_2026',
     consent: 'yes',
-    // Ryan-facing reminder. Not a charge.
+    // Ryan-facing reminder. Not a charge. No weekly subscription on this offer.
     spring_charge_note: clip(
-      'Remaining $30 is NOT charged today. Text in March 2027. Charge $30 once when mowing starts, then weekly. Refund deposit and cancel if they moved and told us. Move trial_end if weather pushes the first mow past 2027-04-20.',
+      'Remaining $30 is NOT charged today. No weekly subscription. Text in March 2027. Charge $30 once when mowing starts. Refund the deposit if they moved and told us before we start.',
       500
     ),
   };
@@ -244,7 +209,6 @@ async function createSpringSession(stripe, body, origin) {
   const phone = clip(body.phone);
   const email = clip(body.email).toLowerCase();
   const address = clip(body.address);
-  const plan = String(body.plan || '').trim().toLowerCase();
 
   if (!name || !phone || !email || !address) {
     return {
@@ -255,12 +219,6 @@ async function createSpringSession(stripe, body, origin) {
   if (!isEmail(email)) {
     return { status: 400, payload: { error: 'Please enter a valid email for the Stripe receipt.' } };
   }
-  if (plan !== 'basic' && plan !== 'full') {
-    return {
-      status: 400,
-      payload: { error: 'Choose Basic ($18/week) or Full Service ($20/week) for after the 4-pack.' },
-    };
-  }
   if (body.consent !== true && body.consent !== 'yes' && body.consent !== 'true') {
     return {
       status: 400,
@@ -269,134 +227,64 @@ async function createSpringSession(stripe, body, origin) {
   }
 
   const flag = neighborhoodFlag(address);
-  const meta = springMetadata({ name, phone, email, address, plan, neighborhoodFlag: flag });
-  const weeklyPriceId = WEEKLY_PRICE_IDS[plan];
-  const planLabel = plan === 'full' ? 'Full Service $20/week' : 'Basic $18/week';
+  const meta = springMetadata({ name, phone, email, address, neighborhoodFlag: flag });
 
   const depositPriceId = await getOrCreateOneTimePrice(stripe, {
     envPriceId: process.env.STRIPE_PRICE_SPRING_DEPOSIT,
     lookupKey: DEPOSIT_LOOKUP_KEY,
     productName: 'Spring 2027 Starter Deposit',
     description:
-      'Fall Fest lock-in. $30 today holds the spring starter rate and one of 10 spots. Remaining $30 is charged when mowing starts, not today.',
+      'Fall Fest lock-in. $30 today holds the spring starter rate and one of 10 spots. Remaining $30 is charged when mowing starts, not today. No weekly subscription.',
     unitAmount: 3000,
     offer: 'spring_starter',
   });
 
-  const submitMessage =
-    'Pays $30 today only. Weekly billing does not start today. We’ll text in March before anything else is charged. Questions: 303.906.8597.';
-
-  try {
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      // Card only. A mixed one-time + subscription Checkout can otherwise
-      // offer bank debit, which does not save a card for the spring charge.
-      payment_method_types: ['card'],
-      customer_email: email,
-      // One-time deposit is invoiced now. Weekly price is on trial until
-      // 2027-04-20 and is not charged today. Remaining $30 is not a line item.
-      line_items: [
-        { price: depositPriceId, quantity: 1 },
-        { price: weeklyPriceId, quantity: 1 },
-      ],
+  // $30 deposit only. Save the customer and card. Do not start a subscription.
+  const session = await stripe.checkout.sessions.create({
+    mode: 'payment',
+    payment_method_types: ['card'],
+    customer_email: email,
+    customer_creation: 'always',
+    line_items: [{ price: depositPriceId, quantity: 1 }],
+    payment_intent_data: {
+      setup_future_usage: 'off_session',
       metadata: meta,
-      subscription_data: {
-        trial_end: SPRING_TRIAL_END_UNIX,
+      description: 'Spring 2027 Starter Deposit — $30 today. No weekly subscription.',
+    },
+    metadata: meta,
+    success_url: `${origin}/fair-promo-thanks.html?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${origin}/fair-promo.html`,
+    custom_text: {
+      submit: {
+        message:
+          'Pays $30 today only. We’ll text you in March before anything else is charged. Questions: 303.906.8597.',
+      },
+    },
+  });
+
+  if (session.customer) {
+    try {
+      await stripe.customers.update(session.customer, {
+        name,
+        email,
+        phone,
         metadata: meta,
-        description: `Spring 2027 starter — ${planLabel} after 4-pack. Trial until 2027-04-20. Deposit $30 paid today.`,
-      },
-      // Customer object is created by subscription Checkout. Copy metadata
-      // onto it via customer_update is not available the same way; we set
-      // customer metadata after the session is created if a customer id exists,
-      // and also pass it on the session so the webhook/dashboard has it now.
-      success_url: `${origin}/fair-promo-thanks.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/fair-promo.html`,
-      custom_text: {
-        submit: { message: submitMessage },
-      },
-    });
-
-    if (session.customer) {
-      try {
-        await stripe.customers.update(session.customer, {
-          name,
-          email,
-          phone,
-          metadata: meta,
-        });
-      } catch (customerErr) {
-        // Session already has the metadata. Do not fail checkout over this.
-        console.error('Could not copy spring metadata onto Customer:', customerErr);
-      }
+      });
+    } catch (customerErr) {
+      // Session already has the metadata. Do not fail checkout over this.
+      console.error('Could not copy spring metadata onto Customer:', customerErr);
     }
-
-    return {
-      status: 200,
-      payload: {
-        url: session.url,
-        sessionId: session.id,
-        mode: 'subscription',
-        trialEnd: '2027-04-20T16:00:00Z',
-        neighborhoodFlag: flag,
-      },
-    };
-  } catch (primaryErr) {
-    console.error(
-      'Spring starter subscription+deposit session failed; using payment fallback (no subscription yet):',
-      primaryErr
-    );
-
-    // FALLBACK: charge the $30 deposit, save the card, do not start weekly.
-    // Ryan creates the subscription in spring from metadata.plan.
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      payment_method_types: ['card'],
-      customer_email: email,
-      customer_creation: 'always',
-      line_items: [{ price: depositPriceId, quantity: 1 }],
-      payment_intent_data: {
-        setup_future_usage: 'off_session',
-        metadata: meta,
-        description: 'Spring 2027 Starter Deposit — $30 today. Weekly not started.',
-      },
-      metadata: Object.assign({}, meta, {
-        billing_path: 'payment_fallback',
-        weekly_price_id: weeklyPriceId,
-        note: 'Subscription NOT started. Start it in spring after the March text and the remaining $30.',
-      }),
-      success_url: `${origin}/fair-promo-thanks.html?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/fair-promo.html`,
-      custom_text: {
-        submit: { message: submitMessage },
-      },
-    });
-
-    if (session.customer) {
-      try {
-        await stripe.customers.update(session.customer, {
-          name,
-          email,
-          phone,
-          metadata: Object.assign({}, meta, {
-            billing_path: 'payment_fallback',
-            weekly_price_id: weeklyPriceId,
-          }),
-        });
-      } catch (customerErr) {
-        console.error('Could not copy fallback metadata onto Customer:', customerErr);
-      }
-    }
-
-    return {
-      status: 200,
-      payload: {
-        url: session.url,
-        sessionId: session.id,
-        mode: 'payment_fallback',
-        neighborhoodFlag: flag,
-      },
-    };
   }
+
+  return {
+    status: 200,
+    payload: {
+      url: session.url,
+      sessionId: session.id,
+      mode: 'payment',
+      neighborhoodFlag: flag,
+    },
+  };
 }
 
 async function createLeafSession(stripe, body, origin) {

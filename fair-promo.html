@@ -36,11 +36,6 @@
   <style>
     body { font-family: Inter, system-ui, sans-serif; color: #1f2937; overflow-x: hidden; }
     h1, p, li, label, button, a { overflow-wrap: anywhere; }
-    .choice input:checked + span {
-      border-color: #1f6b45;
-      background: #e7f3ea;
-      box-shadow: 0 0 0 1px #1f6b45;
-    }
     input, select, textarea { font-size: 16px; }
   </style>
 </head>
@@ -68,44 +63,12 @@
     <h1 class="mt-2 text-[1.7rem] font-extrabold leading-tight tracking-tight sm:text-3xl">
       First 4 spring mows for $60
     </h1>
-    <p class="mt-2 text-base leading-snug text-gray-700">
-      I’m Bromley — I mow in the neighborhood. This rate is only at the clubhouse today. Only 10 spring spots.
-    </p>
 
-    <div class="mt-5 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-amber-200">
-      <img
-        src="images/hero-bromley.jpg"
-        alt="Bromley with the mower in Kechter Farm"
-        class="aspect-[16/9] w-full object-cover object-[center_30%]"
-        width="800"
-        height="450"
-      >
-      <div class="grid grid-cols-2 divide-x divide-amber-100 border-t border-amber-100">
-        <div class="px-4 py-4">
-          <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">Due today</p>
-          <p class="text-3xl font-extrabold text-brand-pumpkin">$30</p>
-          <p class="mt-1 text-sm leading-snug text-gray-600">Locks the rate and one of 10 spots.</p>
-        </div>
-        <div class="px-4 py-4">
-          <p class="text-xs font-semibold uppercase tracking-wide text-gray-500">When we start</p>
-          <p class="text-3xl font-extrabold text-brand-green">$30</p>
-          <p class="mt-1 text-sm leading-snug text-gray-600">Late April. Weather may push to early May.</p>
-        </div>
-      </div>
-    </div>
-
-    <ul class="mt-5 space-y-2.5 text-sm leading-snug text-gray-800">
-      <li class="flex gap-2"><span class="mt-0.5 shrink-0 font-bold text-brand-pumpkin" aria-hidden="true">1</span><span><strong>$30 today</strong> locks your rate and one of 10 spots.</span></li>
-      <li class="flex gap-2"><span class="mt-0.5 shrink-0 font-bold text-brand-green" aria-hidden="true">2</span><span><strong>$30 when we start</strong> — target window late April 2027. Weather decides the week. No specific start date.</span></li>
-      <li class="flex gap-2"><span class="mt-0.5 shrink-0 font-bold text-amber-800" aria-hidden="true">3</span><span>Then <strong>$18 or $20 a week</strong>. Cancel anytime after weekly billing starts.</span></li>
+    <ul class="mt-5 space-y-2.5 text-base leading-snug text-gray-800">
+      <li class="flex gap-2"><span class="mt-0.5 shrink-0 font-bold text-brand-pumpkin" aria-hidden="true">1</span><span><strong>$30 today</strong> locks the rate and one of 10 spots.</span></li>
+      <li class="flex gap-2"><span class="mt-0.5 shrink-0 font-bold text-brand-green" aria-hidden="true">2</span><span><strong>$30 when mowing starts</strong> — late April. Weather may push to early May.</span></li>
+      <li class="flex gap-2"><span class="mt-0.5 shrink-0 font-bold text-amber-800" aria-hidden="true">3</span><span>Deposit comes back if you tell us you moved before we start.</span></li>
     </ul>
-
-    <p class="mt-4 rounded-xl bg-amber-50 px-4 py-3 text-sm leading-snug text-amber-950 ring-1 ring-amber-200">
-      Regular one-time is $18 basic / $25 full. This is a fair-only starter, not the summer rate.
-    </p>
-    <p class="mt-3 text-sm leading-snug text-gray-600">
-      Deposit is refundable if you tell us you moved before we start in spring — contact us, we won’t guess.
-    </p>
 
     <form id="fair-form" class="mt-6 space-y-4" novalidate>
       <div>
@@ -125,51 +88,6 @@
         <input id="address" name="address" required autocomplete="street-address" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2" placeholder="123 Kechter Rd, Fort Collins">
       </div>
 
-      <fieldset>
-        <legend class="mb-2 text-sm font-semibold">After the 4-pack</legend>
-        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <label class="choice block cursor-pointer">
-            <input class="sr-only" type="radio" name="plan" value="basic" required checked>
-            <span class="block rounded-xl border border-amber-200 bg-white px-4 py-3.5">
-              <span class="block font-bold">Basic · $18/week</span>
-              <span class="mt-0.5 block text-sm text-gray-600">Mow only</span>
-            </span>
-          </label>
-          <label class="choice block cursor-pointer">
-            <input class="sr-only" type="radio" name="plan" value="full">
-            <span class="block rounded-xl border border-amber-200 bg-white px-4 py-3.5">
-              <span class="block font-bold">Full Service · $20/week</span>
-              <span class="mt-0.5 block text-sm text-gray-600">Mow, trim, blow</span>
-            </span>
-          </label>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend class="mb-2 text-sm font-semibold">Today</legend>
-        <div class="space-y-2">
-          <label class="choice block cursor-pointer">
-            <input class="sr-only" type="radio" name="offer_choice" value="lock" required checked>
-            <span class="block rounded-xl border border-amber-200 bg-white px-4 py-3.5">
-              <span class="block font-bold">Lock my spot — $30 today</span>
-              <span class="mt-0.5 block text-sm text-gray-600">Card on Stripe. Weekly billing does not start today.</span>
-            </span>
-          </label>
-          <label class="choice block cursor-pointer">
-            <input class="sr-only" type="radio" name="offer_choice" value="notify">
-            <span class="block rounded-xl border border-amber-200 bg-white px-4 py-3.5">
-              <span class="block font-bold">Notify me in spring</span>
-              <span class="mt-0.5 block text-sm text-gray-600">No charge. We’ll text in March. Does not hold a spot.</span>
-            </span>
-          </label>
-        </div>
-      </fieldset>
-
-      <label class="flex items-start gap-3 rounded-xl bg-white px-4 py-3.5 ring-1 ring-amber-200">
-        <input id="consent" name="consent" type="checkbox" required class="mt-1 h-5 w-5 shrink-0 accent-brand-green">
-        <span class="text-sm leading-snug">OK to text and email me about spring scheduling.</span>
-      </label>
-
       <p id="form-error" class="hidden rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800 ring-1 ring-red-200" role="alert"></p>
       <p id="outside-note" class="hidden rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-200"></p>
 
@@ -185,16 +103,9 @@
         type="button"
         class="block w-full py-2 text-center text-sm font-medium text-brand-green underline decoration-brand-green/40 underline-offset-4"
       >
-        Not ready to pay today? Notify me in spring.
+        Notify me in spring
       </button>
-      <p class="text-center text-xs leading-relaxed text-gray-500">
-        Stripe only. $30 today on the lock-in. The other $30 waits until mowing starts. Questions: <a class="font-semibold text-brand-green" href="tel:+13039068597">303.906.8597</a>
-      </p>
     </form>
-
-    <p class="mt-8 text-center text-sm">
-      <a href="leaf-pickup.html" class="font-semibold text-brand-green underline decoration-brand-green/30 underline-offset-4">Need leaves bagged this fall? $40 into your bin →</a>
-    </p>
   </main>
 
   <footer class="border-t border-amber-200/80 bg-white">
@@ -214,12 +125,12 @@
      * these rows are filterable and are not mixed up with mow bookings.
      *
      * Field names this page sends (CSV columns):
-     *   timestamp, name, phone, email, address, offer, plan,
-     *   deposit_status, bin_confirmed, notes, stripe_session_id,
-     *   form_type, neighborhood_flag, source, consent, preferred_week
+     *   timestamp, name, phone, email, address, offer,
+     *   deposit_status, notes, stripe_session_id,
+     *   form_type, neighborhood_flag, source
      *
-     * offer values: spring_starter | spring_notify | leaf_pickup
-     * deposit_status: pending_stripe | no_charge | paid (thanks page, if updated)
+     * offer values: spring_starter | spring_notify
+     * deposit_status: pending_stripe | no_charge
      */
     var FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdarqrky';
     var CHECKOUT_API = '/api/create-fall-checkout';
@@ -232,6 +143,8 @@
     var yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
+    var submittingNotify = false;
+
     function showError(msg) {
       errorEl.textContent = msg;
       errorEl.classList.remove('hidden');
@@ -240,32 +153,6 @@
       errorEl.classList.add('hidden');
       errorEl.textContent = '';
     }
-
-    function selectedOffer() {
-      var picked = form.querySelector('input[name="offer_choice"]:checked');
-      return picked ? picked.value : 'lock';
-    }
-
-    function syncButton() {
-      if (selectedOffer() === 'notify') {
-        submitBtn.textContent = 'Notify me in spring — no charge';
-        submitBtn.classList.remove('bg-brand-pumpkin', 'hover:bg-orange-800');
-        submitBtn.classList.add('bg-brand-green', 'hover:bg-brand-green-dark');
-      } else {
-        submitBtn.textContent = 'Lock my spot — $30 today';
-        submitBtn.classList.add('bg-brand-pumpkin', 'hover:bg-orange-800');
-        submitBtn.classList.remove('bg-brand-green', 'hover:bg-brand-green-dark');
-      }
-    }
-    form.querySelectorAll('input[name="offer_choice"]').forEach(function (el) {
-      el.addEventListener('change', syncButton);
-    });
-    notifyLink.addEventListener('click', function () {
-      var notify = form.querySelector('input[value="notify"]');
-      if (notify) notify.checked = true;
-      syncButton();
-      form.requestSubmit();
-    });
 
     function looksOutside(address) {
       var text = String(address || '').toLowerCase();
@@ -277,7 +164,6 @@
     }
 
     function payload(offerChoice) {
-      var plan = form.querySelector('input[name="plan"]:checked');
       var address = document.getElementById('address').value.trim();
       var outside = looksOutside(address);
       return {
@@ -287,16 +173,12 @@
         email: document.getElementById('email').value.trim(),
         address: address,
         offer: offerChoice === 'notify' ? 'spring_notify' : 'spring_starter',
-        plan: plan ? plan.value : '',
         deposit_status: offerChoice === 'notify' ? 'no_charge' : 'pending_stripe',
-        bin_confirmed: '',
         notes: outside ? 'neighborhood_flag=outside_or_unconfirmed' : '',
         stripe_session_id: '',
         form_type: 'fair_promo',
         neighborhood_flag: outside ? 'outside_or_unconfirmed' : 'kechter_farm',
-        source: 'fall_fest_2026',
-        consent: 'yes',
-        preferred_week: ''
+        source: 'fall_fest_2026'
       };
     }
 
@@ -311,16 +193,23 @@
       });
     }
 
+    notifyLink.addEventListener('click', function () {
+      submittingNotify = true;
+      form.requestSubmit();
+    });
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       hideError();
+      var offerChoice = submittingNotify ? 'notify' : 'lock';
+      submittingNotify = false;
+
       if (!form.checkValidity()) {
         form.reportValidity();
-        showError('Add your name, phone, email, address, plan, and the text/email checkbox.');
+        showError('Add your name, phone, email, and address.');
         return;
       }
 
-      var offerChoice = selectedOffer();
       var data = payload(offerChoice);
       if (data.neighborhood_flag !== 'kechter_farm') {
         outsideEl.textContent = 'That address looks outside Kechter Farm. We’ll still save it and Ryan will confirm before spring.';
@@ -328,7 +217,8 @@
       }
 
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Saving your spot…';
+      notifyLink.disabled = true;
+      submitBtn.textContent = offerChoice === 'notify' ? 'Saving you on the list…' : 'Saving your spot…';
 
       saveLead(data).catch(function (err) {
         console.error('Formspree error (continuing):', err);
@@ -347,7 +237,6 @@
             phone: data.phone,
             email: data.email,
             address: data.address,
-            plan: data.plan,
             consent: true,
             source: 'fall_fest_2026'
           })
@@ -362,7 +251,8 @@
       }).catch(function (err) {
         console.error(err);
         submitBtn.disabled = false;
-        syncButton();
+        notifyLink.disabled = false;
+        submitBtn.textContent = 'Lock my spot — $30 today';
         showError((err && err.message) || 'Something went wrong. Text Ryan at 303.906.8597.');
       });
     });
