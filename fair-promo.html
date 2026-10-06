@@ -64,12 +64,28 @@
       First 4 spring mows for $60
     </h1>
 
+    <figure class="mt-4">
+      <div class="overflow-hidden rounded-2xl ring-1 ring-amber-200">
+        <img
+          src="images/hero-bromley.jpg"
+          alt="Bromley with his mower in the neighborhood"
+          class="h-auto w-full"
+          width="1920"
+          height="1440"
+        >
+      </div>
+      <figcaption class="mt-3 text-base leading-snug text-gray-800">
+        I’m Bromley. I mow in the neighborhood. This rate is only at the clubhouse today.
+      </figcaption>
+    </figure>
+
     <ul class="mt-5 space-y-2.5 text-base leading-snug text-gray-800">
       <li class="flex gap-2"><span class="mt-0.5 shrink-0 font-bold text-brand-pumpkin" aria-hidden="true">1</span><span><strong>$30 today</strong> locks the rate and one of 10 spots.</span></li>
       <li class="flex gap-2"><span class="mt-0.5 shrink-0 font-bold text-brand-green" aria-hidden="true">2</span><span><strong>$30 when mowing starts</strong> — late April. Weather may push to early May.</span></li>
       <li class="flex gap-2"><span class="mt-0.5 shrink-0 font-bold text-amber-800" aria-hidden="true">3</span><span>Deposit comes back if you tell us you moved before we start.</span></li>
     </ul>
 
+    <!-- Lock path only. This form is the only thing that posts to Stripe. -->
     <form id="fair-form" class="mt-6 space-y-4" novalidate>
       <div>
         <label for="name" class="mb-1.5 block text-sm font-semibold">Name</label>
@@ -98,14 +114,47 @@
       >
         Lock my spot — $30 today
       </button>
-      <button
-        id="notify-link"
-        type="button"
-        class="block w-full py-2 text-center text-sm font-medium text-brand-green underline decoration-brand-green/40 underline-offset-4"
-      >
-        Notify me in spring
-      </button>
     </form>
+
+    <!-- Notify path. Separate form. Never posts to create-fall-checkout. -->
+    <section id="notify" class="mt-8 border-t border-amber-200/80 pt-6">
+      <h2 class="text-base font-bold">Not ready to lock a spot?</h2>
+      <p class="mt-1 text-sm leading-snug text-gray-600">No charge. We’ll text you in March when spots open again.</p>
+
+      <form id="notify-form" class="mt-4 space-y-4" novalidate>
+        <div>
+          <label for="notify-name" class="mb-1.5 block text-sm font-semibold">Name</label>
+          <input id="notify-name" name="name" required autocomplete="name" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2" placeholder="Your name">
+        </div>
+        <div>
+          <label for="notify-phone" class="mb-1.5 block text-sm font-semibold">Phone</label>
+          <input id="notify-phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2" placeholder="303.555.0100">
+        </div>
+        <div>
+          <label for="notify-email" class="mb-1.5 block text-sm font-semibold">Email</label>
+          <input id="notify-email" name="email" type="email" required autocomplete="email" inputmode="email" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2" placeholder="you@email.com">
+        </div>
+        <div>
+          <label for="notify-address" class="mb-1.5 block text-sm font-semibold">Street address <span class="font-normal text-gray-500">(Kechter Farm)</span></label>
+          <input id="notify-address" name="address" required autocomplete="street-address" class="w-full rounded-xl border border-amber-200 bg-white px-4 py-3.5 outline-none ring-brand-green focus:ring-2" placeholder="123 Kechter Rd, Fort Collins">
+        </div>
+        <label class="flex items-start gap-3 rounded-xl bg-white px-4 py-3.5 ring-1 ring-amber-200">
+          <input id="notify-consent" name="sms_consent" type="checkbox" required class="mt-1 h-5 w-5 shrink-0 accent-brand-green">
+          <span class="text-sm leading-snug">OK to text me in March. No charge.</span>
+        </label>
+
+        <p id="notify-error" class="hidden rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800 ring-1 ring-red-200" role="alert"></p>
+        <p id="notify-outside" class="hidden rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-950 ring-1 ring-amber-200"></p>
+
+        <button
+          id="notify-btn"
+          type="submit"
+          class="inline-flex min-h-12 w-full items-center justify-center rounded-xl border-2 border-brand-green bg-white px-5 py-3 text-base font-bold text-brand-green transition hover:bg-brand-green-light focus:outline-none focus:ring-2 focus:ring-brand-green focus:ring-offset-2 disabled:opacity-70"
+        >
+          Text me in March.
+        </button>
+      </form>
+    </section>
   </main>
 
   <footer class="border-t border-amber-200/80 bg-white">
@@ -124,34 +173,37 @@
      * Until then we post to the existing booking endpoint with form_type so
      * these rows are filterable and are not mixed up with mow bookings.
      *
+     * Two separate forms. Only #fair-form may call CHECKOUT_API.
+     *
      * Field names this page sends (CSV columns):
      *   timestamp, name, phone, email, address, offer,
      *   deposit_status, notes, stripe_session_id,
-     *   form_type, neighborhood_flag, source
+     *   form_type, neighborhood_flag, source, sms_consent
      *
-     * offer values: spring_starter | spring_notify
-     * deposit_status: pending_stripe | no_charge
+     * Lock:   offer=spring_starter, form_type=fair_promo, deposit_status=pending_stripe
+     * Notify: offer=spring_notify,  form_type=notify_me,  deposit_status=no_charge
      */
     var FORMSPREE_ENDPOINT = 'https://formspree.io/f/mdarqrky';
     var CHECKOUT_API = '/api/create-fall-checkout';
 
-    var form = document.getElementById('fair-form');
+    var lockForm = document.getElementById('fair-form');
+    var notifyForm = document.getElementById('notify-form');
     var errorEl = document.getElementById('form-error');
     var outsideEl = document.getElementById('outside-note');
     var submitBtn = document.getElementById('submit-btn');
-    var notifyLink = document.getElementById('notify-link');
+    var notifyErrorEl = document.getElementById('notify-error');
+    var notifyOutsideEl = document.getElementById('notify-outside');
+    var notifyBtn = document.getElementById('notify-btn');
     var yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-    var submittingNotify = false;
-
-    function showError(msg) {
-      errorEl.textContent = msg;
-      errorEl.classList.remove('hidden');
+    function showError(el, msg) {
+      el.textContent = msg;
+      el.classList.remove('hidden');
     }
-    function hideError() {
-      errorEl.classList.add('hidden');
-      errorEl.textContent = '';
+    function hideError(el) {
+      el.classList.add('hidden');
+      el.textContent = '';
     }
 
     function looksOutside(address) {
@@ -161,25 +213,6 @@
       var otherCity = /\b(loveland|windsor|timnath|greeley|denver|boulder|longmont|berthoud|johnstown|severance|wellington)\b/.test(text);
       var local = /kechter|cinque\s?foil|jupiter|ziegler|strauss|harmony|amber harvest|twin silo|zach/.test(text);
       return !zipOk || otherCity || !local;
-    }
-
-    function payload(offerChoice) {
-      var address = document.getElementById('address').value.trim();
-      var outside = looksOutside(address);
-      return {
-        timestamp: new Date().toISOString(),
-        name: document.getElementById('name').value.trim(),
-        phone: document.getElementById('phone').value.trim(),
-        email: document.getElementById('email').value.trim(),
-        address: address,
-        offer: offerChoice === 'notify' ? 'spring_notify' : 'spring_starter',
-        deposit_status: offerChoice === 'notify' ? 'no_charge' : 'pending_stripe',
-        notes: outside ? 'neighborhood_flag=outside_or_unconfirmed' : '',
-        stripe_session_id: '',
-        form_type: 'fair_promo',
-        neighborhood_flag: outside ? 'outside_or_unconfirmed' : 'kechter_farm',
-        source: 'fall_fest_2026'
-      };
     }
 
     function saveLead(data) {
@@ -193,40 +226,44 @@
       });
     }
 
-    notifyLink.addEventListener('click', function () {
-      submittingNotify = true;
-      form.requestSubmit();
-    });
-
-    form.addEventListener('submit', function (e) {
+    lockForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      hideError();
-      var offerChoice = submittingNotify ? 'notify' : 'lock';
-      submittingNotify = false;
+      hideError(errorEl);
 
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        showError('Add your name, phone, email, and address.');
+      if (!lockForm.checkValidity()) {
+        lockForm.reportValidity();
+        showError(errorEl, 'Add your name, phone, email, and address.');
         return;
       }
 
-      var data = payload(offerChoice);
-      if (data.neighborhood_flag !== 'kechter_farm') {
+      var address = document.getElementById('address').value.trim();
+      var outside = looksOutside(address);
+      var data = {
+        timestamp: new Date().toISOString(),
+        name: document.getElementById('name').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        address: address,
+        offer: 'spring_starter',
+        deposit_status: 'pending_stripe',
+        notes: outside ? 'neighborhood_flag=outside_or_unconfirmed' : '',
+        stripe_session_id: '',
+        form_type: 'fair_promo',
+        neighborhood_flag: outside ? 'outside_or_unconfirmed' : 'kechter_farm',
+        source: 'fall_fest_2026'
+      };
+
+      if (outside) {
         outsideEl.textContent = 'That address looks outside Kechter Farm. We’ll still save it and Ryan will confirm before spring.';
         outsideEl.classList.remove('hidden');
       }
 
       submitBtn.disabled = true;
-      notifyLink.disabled = true;
-      submitBtn.textContent = offerChoice === 'notify' ? 'Saving you on the list…' : 'Saving your spot…';
+      submitBtn.textContent = 'Saving your spot…';
 
       saveLead(data).catch(function (err) {
         console.error('Formspree error (continuing):', err);
       }).then(function () {
-        if (offerChoice === 'notify') {
-          window.location.href = 'fair-promo-thanks.html?mode=notify';
-          return;
-        }
         submitBtn.textContent = 'Opening secure checkout…';
         return fetch(CHECKOUT_API, {
           method: 'POST',
@@ -251,9 +288,54 @@
       }).catch(function (err) {
         console.error(err);
         submitBtn.disabled = false;
-        notifyLink.disabled = false;
         submitBtn.textContent = 'Lock my spot — $30 today';
-        showError((err && err.message) || 'Something went wrong. Text Ryan at 303.906.8597.');
+        showError(errorEl, (err && err.message) || 'Something went wrong. Text Ryan at 303.906.8597.');
+      });
+    });
+
+    notifyForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      hideError(notifyErrorEl);
+
+      if (!notifyForm.checkValidity()) {
+        notifyForm.reportValidity();
+        showError(notifyErrorEl, 'Add your name, phone, email, address, and consent to text.');
+        return;
+      }
+
+      var address = document.getElementById('notify-address').value.trim();
+      var outside = looksOutside(address);
+      var data = {
+        timestamp: new Date().toISOString(),
+        name: document.getElementById('notify-name').value.trim(),
+        phone: document.getElementById('notify-phone').value.trim(),
+        email: document.getElementById('notify-email').value.trim(),
+        address: address,
+        offer: 'spring_notify',
+        form_type: 'notify_me',
+        deposit_status: 'no_charge',
+        sms_consent: 'yes_text_in_march',
+        notes: outside ? 'neighborhood_flag=outside_or_unconfirmed' : 'consent_to_text_in_march',
+        stripe_session_id: '',
+        neighborhood_flag: outside ? 'outside_or_unconfirmed' : 'kechter_farm',
+        source: 'fall_fest_2026'
+      };
+
+      if (outside) {
+        notifyOutsideEl.textContent = 'That address looks outside Kechter Farm. We’ll still save it and Ryan will confirm before spring.';
+        notifyOutsideEl.classList.remove('hidden');
+      }
+
+      notifyBtn.disabled = true;
+      notifyBtn.textContent = 'Saving you on the list…';
+
+      saveLead(data).then(function () {
+        window.location.href = 'fair-promo-thanks.html?mode=notify';
+      }).catch(function (err) {
+        console.error(err);
+        notifyBtn.disabled = false;
+        notifyBtn.textContent = 'Text me in March.';
+        showError(notifyErrorEl, 'Could not save your spot on the list. Text Ryan at 303.906.8597.');
       });
     });
   </script>

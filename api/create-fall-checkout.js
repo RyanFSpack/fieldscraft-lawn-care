@@ -435,6 +435,13 @@ module.exports = async function handler(req, res) {
   const offer = String(body.offer || body.form_type || '').trim().toLowerCase();
   const origin = getSiteOrigin(req);
 
+  // Notify-me is a Formspree-only list. Never open Checkout for it.
+  if (offer === 'notify_me' || offer === 'spring_notify') {
+    return sendJson(res, 400, {
+      error: 'Notify me does not take a deposit. Use the spring list form. No charge.',
+    });
+  }
+
   try {
     if (offer === 'spring_starter' || offer === 'fair_promo') {
       const result = await createSpringSession(stripe, body, origin);
