@@ -12,29 +12,32 @@
  *     - $30 deposit charged TODAY (one-time). Nothing else.
  *     - Customer is created and saved. Card is saved for the later $30.
  *     - NO weekly subscription. Do not attach basic_weekly or full_weekly.
- *     - The other $30 is NOT charged today. Ryan charges that once, manually,
- *       when mowing actually starts (see SPRING CHARGE below).
+ *     - The other $30 is NOT charged today. Ryan invoices that once from the
+ *       Dashboard when mowing actually starts (see SPRING CHARGE below).
  *
  *  B) Leaf pickup  (leaf-pickup.html, offer=leaf_pickup)
  *     - One-time $40. No subscription. No haul-away.
  *
- * Stripe Dashboard products Ryan must create (or confirm) before go-live.
- * Until the Price ID env vars are set, this file creates the Product + Price
- * on the fly and reuses them by lookup_key so we do not mint a new Price
- * on every scan of the QR code.
+ * LIVE Price IDs. Use these exactly. Do not use a prod_ ID. Do not look up
+ * or create a Price at request time — a wrong lookup would charge the wrong
+ * amount at the booth.
  *
- *   1. Product name:  Spring 2027 Starter Deposit
- *      Price:         $30.00 USD, one-time
- *      lookup_key:    spring_2027_starter_deposit
- *      Env override:  STRIPE_PRICE_SPRING_DEPOSIT
+ *   Deposit, charge today on /fair-promo only:
+ *     price_1UNviQIwpXk8ife0vdd9vxSl
+ *     Product: Spring 2027 Starter Deposit, $30 one-time
  *
- *   2. Product name:  Fall Leaf Pickup — yard waste bin
- *      Price:         $40.00 USD, one-time
- *      lookup_key:    fall_leaf_pickup_bin
- *      Env override:  STRIPE_PRICE_LEAF_PICKUP
+ *   Balance, do NOT charge on any fair page:
+ *     price_1UNvjSIwpXk8ife0JSt1ZOm3
+ *     Product: Spring 2027 Starter Balance, $30 one-time
+ *     Ryan invoices this later from the Dashboard. Stored below so spring
+ *     billing has the ID. Never put it in line_items.
  *
- * Weekly plans are NOT part of this offer. Do not attach
- * basic_weekly or full_weekly to a spring_starter Checkout Session.
+ *   Leaf, charge on /leaf-pickup only:
+ *     price_1UNvkUIwpXk8ife0mSaQb62h
+ *     Product: Fall Leaf Pickup, $40 one-time
+ *
+ * Do not charge basic_weekly (price_1TuxzEIwpXk8ife0iLcI5L4R) or
+ * full_weekly (price_1TuxyXIwpXk8ife0gx9HvW6T) from these pages.
  * book.html and weekly.html still use /api/create-checkout-session.js.
  *
  * -----------------------------------------------------------------------------
@@ -57,15 +60,31 @@
  *      may push this to early May — never promise a specific start date):
  *      charge the remaining $30 ONCE as a one-time invoice.
  *
- * The remaining $30 is never a silent automatic charge. There is no Price
- * and no subscription item for it. Ryan charges it by hand when mowing starts.
+ * The remaining $30 is never a silent automatic charge and is never a line
+ * item on these pages. Ryan invoices price_1UNvjSIwpXk8ife0JSt1ZOm3 from the
+ * Dashboard when mowing starts.
  * -----------------------------------------------------------------------------
  */
 
 const Stripe = require('stripe');
 
-const DEPOSIT_LOOKUP_KEY = 'spring_2027_starter_deposit';
-const LEAF_LOOKUP_KEY = 'fall_leaf_pickup_bin';
+// Charge today on /fair-promo only. Spring 2027 Starter Deposit, $30 one-time.
+const SPRING_DEPOSIT_PRICE_ID = 'price_1UNviQIwpXk8ife0vdd9vxSl';
+
+// Do NOT charge on any fair page. Spring 2027 Starter Balance, $30 one-time.
+// Ryan invoices this later from the Dashboard. Stored here so spring billing
+// has the ID. Never add it to line_items.
+const SPRING_BALANCE_PRICE_ID = 'price_1UNvjSIwpXk8ife0JSt1ZOm3';
+
+// Charge on /leaf-pickup only. Fall Leaf Pickup, $40 one-time.
+const LEAF_PICKUP_PRICE_ID = 'price_1UNvkUIwpXk8ife0mSaQb62h';
+
+// Weekly plans must never be charged from this file.
+const FORBIDDEN_PRICE_IDS = [
+  'price_1TuxzEIwpXk8ife0iLcI5L4R', // basic_weekly
+  'price_1TuxyXIwpXk8ife0gx9HvW6T', // full_weekly
+  SPRING_BALANCE_PRICE_ID,
+];
 
 function getSiteOrigin(req) {
   if (process.env.SITE_URL) {
@@ -112,76 +131,35 @@ function isEmail(value) {
 }
 
 /**
- * Soft neighborhood flag. We still accept the lead.
- * Obvious outsides: a different city named outright, or a ZIP that is not
- * Fort Collins 80521–80528 / 80553. "Fort Collins" alone is not enough to
- * clear the flag — Kechter Farm should appear, or a known local street.
+ * Quiet flag only. Never reject a payment because of it, and never show it
+ * to the customer. Fort Collins, 80528, or 80525 marks kechter_farm.
  */
 function neighborhoodFlag(address) {
   const text = String(address || '').toLowerCase();
-  const zip = text.match(/\b(\d{5})(?:-\d{4})?\b/);
-  const zipOk = !zip || /^(8052[1-8]|80553)$/.test(zip[1]);
-
-  const otherCity =
-    /\b(loveland|windsor|timnath|greeley|denver|boulder|longmont|berthoud|johnstown|severance|wellington)\b/.test(
-      text
-    );
-
-  const mentionsKechter = /kechter/.test(text);
-  const localStreet =
-    /\b(cinque\s?foil|jupiter|kechter|ziegler|strauss|harmony|amber harvest|twin silo|zach)\b/.test(
-      text
-    );
-
-  if (!zipOk || otherCity || (!mentionsKechter && !localStreet)) {
-    return 'outside_or_unconfirmed';
+  if (text.includes('fort collins') || /\b80528\b/.test(text) || /\b80525\b/.test(text)) {
+    return 'kechter_farm';
   }
-  return 'kechter_farm';
+  return 'review';
 }
 
 /**
- * Find an existing one-time Price by lookup_key, or create Product + Price.
- * Prefer STRIPE_PRICE_* env vars when Ryan has pasted a Dashboard Price ID.
+ * Charge only the live Price ID for this offer. Ignore any other client
+ * priceId. Never a prod_ ID, never a lookup, never a Price created here.
  */
-async function getOrCreateOneTimePrice(stripe, options) {
-  if (options.envPriceId) return options.envPriceId;
-
-  const existing = await stripe.prices.list({
-    lookup_keys: [options.lookupKey],
-    active: true,
-    limit: 1,
-  });
-  const match = existing.data && existing.data.find((price) => price.lookup_key === options.lookupKey);
-  if (match) {
-    if (match.unit_amount !== options.unitAmount) {
-      throw new Error(
-        `Stripe Price ${match.id} (${options.lookupKey}) is ${match.unit_amount} cents, expected ${options.unitAmount}. Fix the Dashboard price before taking Fall Fest payments.`
-      );
-    }
-    return match.id;
+function priceIdForOffer(offer, requestedPriceId) {
+  const expected =
+    offer === 'leaf_pickup' ? LEAF_PICKUP_PRICE_ID : SPRING_DEPOSIT_PRICE_ID;
+  const requested = String(requestedPriceId || '').trim();
+  if (requested && requested !== expected) {
+    throw new Error('That Price is not charged from this page.');
   }
-
-  const product = await stripe.products.create({
-    name: options.productName,
-    description: options.description,
-    metadata: {
-      source: 'fall_fest_2026',
-      offer: options.offer,
-    },
-  });
-
-  const price = await stripe.prices.create({
-    product: product.id,
-    currency: 'usd',
-    unit_amount: options.unitAmount,
-    lookup_key: options.lookupKey,
-    metadata: {
-      source: 'fall_fest_2026',
-      offer: options.offer,
-    },
-  });
-
-  return price.id;
+  if (!/^price_[A-Za-z0-9]+$/.test(expected) || expected.indexOf('prod_') !== -1) {
+    throw new Error('Fall Fest checkout requires a live price_ ID.');
+  }
+  if (FORBIDDEN_PRICE_IDS.indexOf(expected) !== -1) {
+    throw new Error('That Price must not be charged from a Fall Fest page.');
+  }
+  return expected;
 }
 
 function springMetadata(fields) {
@@ -198,9 +176,10 @@ function springMetadata(fields) {
     consent: 'yes',
     // Ryan-facing reminder. Not a charge. No weekly subscription on this offer.
     spring_charge_note: clip(
-      'Remaining $30 is NOT charged today. No weekly subscription. Text in March 2027. Charge $30 once when mowing starts. Refund the deposit if they moved and told us before we start.',
+      'Remaining $30 is NOT charged today. No weekly subscription. Text in March 2027. Invoice price_1UNvjSIwpXk8ife0JSt1ZOm3 once from the Dashboard when mowing starts. Refund the deposit if they moved and told us before we start.',
       500
     ),
+    spring_balance_price_id: SPRING_BALANCE_PRICE_ID,
   };
 }
 
@@ -229,15 +208,7 @@ async function createSpringSession(stripe, body, origin) {
   const flag = neighborhoodFlag(address);
   const meta = springMetadata({ name, phone, email, address, neighborhoodFlag: flag });
 
-  const depositPriceId = await getOrCreateOneTimePrice(stripe, {
-    envPriceId: process.env.STRIPE_PRICE_SPRING_DEPOSIT,
-    lookupKey: DEPOSIT_LOOKUP_KEY,
-    productName: 'Spring 2027 Starter Deposit',
-    description:
-      'Fall Fest lock-in. $30 today holds the spring starter rate and one of 10 spots. Remaining $30 is charged when mowing starts, not today. No weekly subscription.',
-    unitAmount: 3000,
-    offer: 'spring_starter',
-  });
+  const depositPriceId = priceIdForOffer('spring_starter', body.priceId);
 
   // $30 deposit only. Save the customer and card. Do not start a subscription.
   const session = await stripe.checkout.sessions.create({
@@ -248,6 +219,7 @@ async function createSpringSession(stripe, body, origin) {
     line_items: [{ price: depositPriceId, quantity: 1 }],
     payment_intent_data: {
       setup_future_usage: 'off_session',
+      receipt_email: email,
       metadata: meta,
       description: 'Spring 2027 Starter Deposit — $30 today. No weekly subscription.',
     },
@@ -325,6 +297,12 @@ async function createLeafSession(stripe, body, origin) {
     return { status: 400, payload: { error: 'Consent to text about the pickup day is required.' } };
   }
 
+  // Optional tip. Default is no tip. Never create a Stripe Price for it.
+  const tipAmount = Number(body.tipAmount != null ? body.tipAmount : body.tip_amount || 0);
+  if (![0, 3, 5].includes(tipAmount)) {
+    return { status: 400, payload: { error: 'Tip must be no tip, $3, or $5.' } };
+  }
+
   const flag = neighborhoodFlag(address);
   const meta = {
     name,
@@ -341,26 +319,31 @@ async function createLeafSession(stripe, body, origin) {
     consent: 'yes',
     plan: '',
     deposit: '',
+    tip_amount: String(tipAmount),
   };
 
-  const leafPriceId = await getOrCreateOneTimePrice(stripe, {
-    envPriceId: process.env.STRIPE_PRICE_LEAF_PICKUP,
-    lookupKey: LEAF_LOOKUP_KEY,
-    productName: 'Fall Leaf Pickup — yard waste bin',
-    description:
-      'Bromley mows and bags leaves into the customer’s own yard-waste bin. Nothing is hauled away. $40 per visit.',
-    unitAmount: 4000,
-    offer: 'leaf_pickup',
-  });
+  const leafPriceId = priceIdForOffer('leaf_pickup', body.priceId);
+  const lineItems = [{ price: leafPriceId, quantity: 1 }];
+  if (tipAmount === 3 || tipAmount === 5) {
+    lineItems.push({
+      quantity: 1,
+      price_data: {
+        currency: 'usd',
+        unit_amount: tipAmount * 100,
+        product_data: { name: 'Tip for Bromley' },
+      },
+    });
+  }
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
     payment_method_types: ['card'],
     customer_email: email,
     customer_creation: 'always',
-    line_items: [{ price: leafPriceId, quantity: 1 }],
+    line_items: lineItems,
     metadata: meta,
     payment_intent_data: {
+      receipt_email: email,
       metadata: meta,
       description: 'Fall leaf pickup — leaves go in the customer yard-waste bin only. $40.',
     },
